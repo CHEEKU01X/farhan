@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foziya & Heer | A Cinematic Love Story</title>
+  <meta name="description" content="A cinematic interactive love letter and memory book created specially for Foziya (Heer).">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Libraries via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- WebGL Background & 3D Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Film Grain & Vignette Overlay -->
+  <div class="grain-overlay"></div>
+  <div class="vignette-overlay"></div>
+  <div class="light-leak"></div>
+
+  <!-- Music Player Controller -->
+  <div class="music-control-container" id="music-control" title="Toggle Music">
+    <button class="music-btn" id="music-btn" aria-label="Toggle Audio">
+      <div class="eq-bars">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <span class="music-label" id="music-label">Song</span>
+    </button>
+  </div>
+  <audio id="bg-audio" loop src="./assets/music/our-song.mp3" preload="auto"></audio>
+
+  <!-- MAIN INTERACTIVE TIMELINE CONTAINER -->
+  <main id="story-container">
+
+    <!-- SCENE 1: OPENING / LOADING -->
+    <section class="scene-section scene-opening" id="scene-opening">
+      <div class="opening-content">
+        <div class="glowing-orb"></div>
+        <div class="typewriter-box">
+          <p class="tw-text tw-line-1" id="tw-1"></p>
+          <p class="tw-text tw-line-2" id="tw-2"></p>
+          <p class="tw-text tw-line-3" id="tw-3"></p>
+        </div>
+        <button class="enter-btn" id="enter-btn">
+          <span>click to enter ♡</span>
+          <div class="btn-glow"></div>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 2: FOZIYA INTRO -->
+    <section class="scene-section scene-intro" id="scene-intro">
+      <div class="intro-content">
+        <h1 class="hero-title" id="hero-title">FOZIYA</h1>
+        <p class="hero-subtitle">my Heer ♡</p>
+        <p class="hero-tagline">the girl behind all these little memories.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 3: PART 1 — HEER (PHOTOS 1 to 5) -->
+    <section class="scene-section scene-her-part1" id="scene-her-part1">
+      <div class="photos-wrapper" id="her-photos-1-container">
+        <!-- Injected via JavaScript from herPhotos array (1 to 5) -->
+      </div>
+    </section>
+
+    <!-- SCENE 4: TRANSITION TO DIARY -->
+    <section class="scene-section scene-diary-intro" id="scene-diary-intro">
+      <div class="diary-intro-box">
+        <p class="diary-intro-text line-1">But these photographs aren't the reason I made this.</p>
+        <p class="diary-intro-text line-2">There's something you gave me...</p>
+        <p class="diary-intro-text line-3">that I wanted to keep forever.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 5: PART 2 — HER DIARY (18 PHOTOS IN 3D) -->
+    <section class="scene-section scene-diary" id="scene-diary">
+      <div class="diary-hud">
+        <span class="diary-counter" id="diary-counter">01 / 18</span>
+        <span class="diary-caption">her effort ♡</span>
+      </div>
+      <div class="diary-3d-anchor" id="diary-3d-anchor"></div>
+      <div class="diary-outro-box" id="diary-outro-box">
+        <p class="diary-outro-text">18 little pieces of your heart.</p>
+        <p class="diary-outro-text accent">I noticed every one of them.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 6: PART 3 — HEER AGAIN (PHOTOS 6 to 10) -->
+    <section class="scene-section scene-her-part2" id="scene-her-part2">
+      <div class="her2-intro-box" id="her2-intro-box">
+        <p class="her2-intro-text">And after looking at everything you made...</p>
+        <p class="her2-intro-text">I kept coming back to the person behind it all.</p>
+        <h2 class="her2-intro-highlight">you.</h2>
+      </div>
+      <div class="photos-wrapper" id="her-photos-2-container">
+        <!-- Injected via JavaScript from herPhotos array (6 to 10) -->
+      </div>
+    </section>
+
+    <!-- SCENE 7: FINAL LOVE LETTER -->
+    <section class="scene-section scene-love-letter" id="scene-love-letter">
+      <div class="letter-intro-box">
+        <p class="letter-intro-text">And now...</p>
+        <p class="letter-intro-text accent">there's something I really want you to know.</p>
+      </div>
+      <div class="letter-card" id="letter-card">
+        <div class="letter-content" id="letter-content">
+          <!-- Injected sentence by sentence via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 8: OUR PHOTOS -->
+    <section class="scene-section scene-us-photos" id="scene-us-photos">
+      <div class="us-stage" id="us-stage">
+        <div class="us-card card-my" id="card-my">
+          <div class="photo-frame">
+            <img id="img-my" src="./assets/us/my-photo.jpg" alt="My Photo" />
+          </div>
+          <span class="card-tag">Me</span>
+        </div>
+        <div class="us-card card-her" id="card-her">
+          <div class="photo-frame">
+            <img id="img-her-us" src="./assets/us/her-photo.jpg" alt="Her Photo" />
+          </div>
+          <span class="card-tag">Heer</span>
+        </div>
+      </div>
+      <div class="us-merged-title" id="us-merged-title">
+        <h2 class="us-heading">YOU + ME</h2>
+        <p class="us-subheading">my favorite story.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 9: FINAL I LOVE YOU (TYPEWRITER & EXTREME ZOOM) -->
+    <section class="scene-section scene-love-climax" id="scene-love-climax">
+      <div class="climax-intro">
+        <p class="climax-sub">And finally...</p>
+      </div>
+      <div class="climax-text-container" id="climax-container">
+        <h1 class="climax-typewriter" id="climax-text"></h1>
+      </div>
+    </section>
+
+    <!-- SCENE 10 & 11 & 12: 3D HEARTS, 3D CURTAINS & FINAL MESSAGE -->
+    <section class="scene-section scene-finale" id="scene-finale">
+      <div class="hearts-center-message" id="hearts-center-message">
+        <h1>I LOVE YOU, HEER ❤️</h1>
+      </div>
+      <div class="curtains-overlay-message" id="curtains-message">
+        <p class="curtain-line-1">Goodnight, gorgeous baby.</p>
+        <p class="curtain-line-2">I love you. Always. ♡</p>
+      </div>
+    </section>
+
+    <!-- SCENE 13: END BLACK SCREEN -->
+    <section class="scene-section scene-end-black" id="scene-end-black"></section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

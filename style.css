@@ -1,0 +1,890 @@
+/* ==========================================================================
+   CINEMATIC ROMANTIC EXPERIENCE - DESIGN SYSTEM
+   Targeting Foziya (Heer)
+   ========================================================================== */
+
+:root {
+  --bg-dark: #050505;
+  --bg-burgundy-dark: #120406;
+  --bg-card: #0d0608;
+  
+  --accent-gold: #d4af37;
+  --accent-gold-light: #f3e5ab;
+  --accent-rose: #7a121d;
+  --accent-burgundy: #4a0e17;
+
+  --text-main: #f5f5f7;
+  --text-cream: #f7e7ce;
+  --text-muted: #a39893;
+  --text-dim: #6e6561;
+
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-handwriting: 'Caveat', cursive;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --ease-cinematic: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* WebGL Background Canvas */
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Film Grain & Cinematic Overlays */
+.grain-overlay {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  animation: grainShift 8s steps(10) infinite;
+}
+
+@keyframes grainShift {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-5%, -5%); }
+  40% { transform: translate(-10%, 5%); }
+  60% { transform: translate(5%, -10%); }
+  80% { transform: translate(-5%, 15%); }
+}
+
+.vignette-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+.light-leak {
+  position: fixed;
+  top: -20vh;
+  right: -20vw;
+  width: 60vw;
+  height: 60vh;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(122, 18, 29, 0.15) 0%, rgba(212, 175, 55, 0.05) 40%, transparent 70%);
+  filter: blur(60px);
+  animation: lightPulse 12s ease-in-out infinite alternate;
+}
+
+@keyframes lightPulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* Floating Luxury Music Control */
+.music-control-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+}
+
+.music-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(18, 8, 12, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 30px;
+  color: var(--text-cream);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: all 0.4s var(--ease-soft);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.music-btn:hover {
+  border-color: var(--accent-gold);
+  background: rgba(45, 12, 20, 0.85);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+.eq-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+}
+
+.eq-bars .bar {
+  width: 2px;
+  height: 100%;
+  background-color: var(--accent-gold);
+  border-radius: 1px;
+  animation: eqBounce 1.2s ease infinite alternate;
+}
+
+.eq-bars .bar:nth-child(1) { animation-delay: 0.1s; }
+.eq-bars .bar:nth-child(2) { animation-delay: 0.3s; }
+.eq-bars .bar:nth-child(3) { animation-delay: 0.2s; }
+.eq-bars .bar:nth-child(4) { animation-delay: 0.4s; }
+
+.music-btn.paused .eq-bars .bar {
+  animation-play-state: paused;
+  height: 4px;
+}
+
+@keyframes eqBounce {
+  0% { height: 3px; }
+  100% { height: 14px; }
+}
+
+/* ==========================================================================
+   STORY CONTAINER & SCENE SECTIONS
+   ========================================================================== */
+
+#story-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.scene-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 1: OPENING / LOADING
+   -------------------------------------------------------------------------- */
+.scene-opening {
+  height: 100vh;
+  background: #000;
+  z-index: 50;
+
+}
+
+.opening-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 650px;
+}
+
+.glowing-orb {
+  width: 8px;
+  height: 8px;
+  background: var(--text-cream);
+  border-radius: 50%;
+  box-shadow: 0 0 25px 8px rgba(247, 231, 206, 0.8), 0 0 50px 15px rgba(212, 175, 55, 0.4);
+  margin-bottom: 40px;
+  animation: orbPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes orbPulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 1; }
+}
+
+.typewriter-box {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tw-text {
+  font-family: var(--font-serif);
+  color: var(--text-cream);
+  margin: 10px 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.tw-line-1 {
+  font-size: 1.8rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.tw-line-2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--text-main);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.tw-line-3 {
+  font-size: 1.5rem;
+  font-family: var(--font-handwriting);
+  color: var(--accent-gold);
+}
+
+.enter-btn {
+  margin-top: 50px;
+  position: relative;
+  padding: 14px 36px;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: var(--text-cream);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  border-radius: 40px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.5s var(--ease-soft);
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.enter-btn:hover {
+  border-color: var(--accent-gold);
+  color: #fff;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+}
+
+.enter-btn .btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+  transition: left 0.8s ease;
+}
+
+.enter-btn:hover .btn-glow {
+  left: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 2: FOZIYA INTRO
+   -------------------------------------------------------------------------- */
+.scene-intro {
+  height: 120vh;
+  text-align: center;
+}
+
+.intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 6.5rem;
+  font-weight: 700;
+  letter-spacing: 12px;
+  color: var(--text-main);
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 30%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 10px 40px rgba(0,0,0,0.9);
+  transition: transform 0.1s linear;
+}
+
+.hero-subtitle {
+  font-family: var(--font-handwriting);
+  font-size: 3rem;
+  color: var(--accent-gold);
+  margin-top: 10px;
+}
+
+.hero-tagline {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-top: 15px;
+  letter-spacing: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   SCENES 3 & 6: HER PHOTO CARDS (PARTS 1 & 2)
+   -------------------------------------------------------------------------- */
+.photos-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 150vh; /* Generous scroll spacing so photos feel distinct */
+  padding: 10vh 0;
+}
+
+.her-photo-card {
+  position: relative;
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.photo-frame-container {
+  position: relative;
+  max-width: 520px;
+  width: 90%;
+  border-radius: 8px;
+  padding: 14px;
+  background: linear-gradient(145deg, #180a0f, #090305);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(74, 14, 23, 0.3);
+  overflow: hidden;
+  transition: transform 0.6s var(--ease-cinematic);
+}
+
+.photo-frame-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.her-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  filter: contrast(1.05) brightness(0.95);
+  transition: filter 0.8s ease, transform 0.8s ease;
+}
+
+.flash-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.blur-reveal .her-img {
+  filter: blur(18px) brightness(0.6);
+}
+
+.photo-quote-box {
+  margin-top: 35px;
+  text-align: center;
+  max-width: 650px;
+  padding: 0 20px;
+}
+
+.quote-text {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-style: italic;
+  color: var(--text-cream);
+  line-height: 1.5;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}
+
+.sub-text {
+  margin-top: 12px;
+  font-family: var(--font-handwriting);
+  font-size: 1.9rem;
+  color: var(--accent-gold);
+}
+
+/* Special Childhood Photo Sequence Styling */
+.childhood-sequence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.childhood-sublines {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.childhood-line {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.childhood-line.highlight {
+  font-family: var(--font-handwriting);
+  font-size: 2.2rem;
+  color: var(--accent-gold);
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 4: DIARY INTRO
+   -------------------------------------------------------------------------- */
+.scene-diary-intro {
+  height: 100vh;
+  text-align: center;
+}
+
+.diary-intro-box {
+  max-width: 700px;
+}
+
+.diary-intro-text {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: var(--text-cream);
+  margin: 20px 0;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 5: DIARY 3D EXPERIENCE & COUNTER
+   -------------------------------------------------------------------------- */
+.scene-diary {
+  position: relative;
+  height: 450vh; /* Long scroll timeline for 18 physical diary cards */
+  width: 100%;
+}
+
+.diary-hud {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 24px;
+  background: rgba(10, 5, 8, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.diary-counter {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--accent-gold);
+}
+
+.diary-caption {
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.diary-outro-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 45;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.diary-outro-text {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  color: var(--text-cream);
+  margin: 10px 0;
+}
+
+.diary-outro-text.accent {
+  font-family: var(--font-handwriting);
+  font-size: 3rem;
+  color: var(--accent-gold);
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 6: HER PART 2 INTRO
+   -------------------------------------------------------------------------- */
+.her2-intro-box {
+  text-align: center;
+  max-width: 700px;
+  margin-bottom: 20vh;
+}
+
+.her2-intro-text {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: var(--text-cream);
+  margin: 15px 0;
+}
+
+.her2-intro-highlight {
+  font-family: var(--font-handwriting);
+  font-size: 4.5rem;
+  color: var(--accent-gold);
+  margin-top: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 7: FINAL LOVE LETTER
+   -------------------------------------------------------------------------- */
+.scene-love-letter {
+  min-height: 250vh; /* Scroll-driven line by line reveal */
+  flex-direction: column;
+}
+
+.letter-intro-box {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.letter-intro-text {
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  color: var(--text-cream);
+  margin: 10px 0;
+}
+
+.letter-intro-text.accent {
+  font-family: var(--font-handwriting);
+  font-size: 2.8rem;
+  color: var(--accent-gold);
+}
+
+.letter-card {
+  position: relative;
+  max-width: 750px;
+  width: 90%;
+  padding: 60px 45px;
+  background: linear-gradient(165deg, rgba(20, 10, 15, 0.95), rgba(10, 5, 8, 0.95));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), inset 0 0 40px rgba(74, 14, 23, 0.2);
+  backdrop-filter: blur(15px);
+}
+
+.letter-content p {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  line-height: 1.85;
+  color: var(--text-cream);
+  margin-bottom: 24px;
+  opacity: 0.15;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease, color 0.6s ease;
+}
+
+.letter-content p.active-line {
+  opacity: 1;
+  transform: translateY(0);
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(247, 231, 206, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 8: OUR PHOTOS
+   -------------------------------------------------------------------------- */
+.scene-us-photos {
+  height: 180vh;
+  flex-direction: column;
+}
+
+.us-stage {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 480px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.us-card {
+  position: absolute;
+  width: 320px;
+  padding: 12px;
+  background: #14090d;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.5s ease;
+}
+
+.us-card .photo-frame {
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.us-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-tag {
+  margin-top: 10px;
+  font-family: var(--font-handwriting);
+  font-size: 1.6rem;
+  color: var(--accent-gold);
+}
+
+.card-my {
+  transform: translateX(-240px) rotate(-6deg);
+}
+
+.card-her {
+  transform: translateX(240px) rotate(6deg);
+}
+
+.us-merged-title {
+  margin-top: 50px;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.8s var(--ease-cinematic);
+}
+
+.us-heading {
+  font-family: var(--font-serif);
+  font-size: 4.5rem;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: var(--text-main);
+  background: linear-gradient(180deg, #fff 40%, var(--accent-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.us-subheading {
+  font-family: var(--font-handwriting);
+  font-size: 2.4rem;
+  color: var(--accent-gold);
+  margin-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   SCENE 9 & 10: LOVE CLIMAX & 3D HEARTS
+   -------------------------------------------------------------------------- */
+.scene-love-climax {
+  height: 200vh;
+  flex-direction: column;
+  text-align: center;
+}
+
+.climax-intro {
+  margin-bottom: 30px;
+}
+
+.climax-sub {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.climax-text-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.climax-typewriter {
+  font-family: var(--font-serif);
+  font-size: 7.5rem;
+  font-weight: 700;
+  letter-spacing: 12px;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 60px rgba(212, 175, 55, 0.4);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.scene-finale {
+  position: relative;
+  height: 250vh;
+  width: 100%;
+}
+
+.hearts-center-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+}
+
+.hearts-center-message h1 {
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  color: var(--text-cream);
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+}
+
+.curtains-overlay-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 45;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  color: var(--text-cream);
+}
+
+.curtain-line-1 {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+.curtain-line-2 {
+  font-family: var(--font-handwriting);
+  font-size: 3.5rem;
+  color: var(--accent-gold);
+}
+
+.scene-end-black {
+  height: 100vh;
+  background: #000;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (MOBILE & TABLET)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3.8rem;
+    letter-spacing: 6px;
+  }
+
+  .hero-subtitle {
+    font-size: 2.2rem;
+  }
+
+  .quote-text {
+    font-size: 1.35rem;
+  }
+
+  .sub-text {
+    font-size: 1.5rem;
+  }
+
+  .letter-card {
+    padding: 35px 22px;
+  }
+
+  .letter-content p {
+    font-size: 1.2rem;
+  }
+
+  .climax-typewriter {
+    font-size: 3.8rem;
+    letter-spacing: 4px;
+  }
+
+  .us-stage {
+    height: 380px;
+  }
+
+  .us-card {
+    width: 220px;
+  }
+
+  .card-my {
+    transform: translateX(-80px) rotate(-5deg);
+  }
+
+  .card-her {
+    transform: translateX(80px) rotate(5deg);
+  }
+
+  .us-heading {
+    font-size: 3rem;
+  }
+
+  .curtain-line-1 {
+    font-size: 2rem;
+  }
+
+  .curtain-line-2 {
+    font-size: 2.5rem;
+  }
+
+  .hearts-center-message h1 {
+    font-size: 2.4rem;
+  }
+}
