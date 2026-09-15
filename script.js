@@ -7,7 +7,7 @@ const CONFIG = {
   herName: "Foziya",
   nickname: "Farhaann",
   herPhotoCount: 10,
-  diaryPhotoCount: 13,
+  diaryPhotoCount: 14,
   myPhoto: "./assets/us/my-photo.jpg",
   herFinalPhoto: "./assets/us/her-photo.jpg",
   music: "./assets/music/our-song.mp3"
@@ -96,11 +96,12 @@ const herPhotosData = [
   }
 ];
 
-// 3. DIARY PHOTOS ARRAY (13 Photos)
-const diaryPhotos = Array.from(
-  { length: CONFIG.diaryPhotoCount },
-  (_, i) => `./assets/diary/diary${i + 1}.jpg`
-);
+// 3. DIARY PHOTOS DATA (14 Photos)
+const diaryPhotosData = Array.from({ length: CONFIG.diaryPhotoCount }, (_, i) => ({
+  num: i + 1,
+  src: `./assets/diary/diary${i + 1}.jpeg`,
+  fallbackSrcs: [`./assets/diary/diary${i + 1}.jpg`, `./diary${i + 1}.jpeg`, `./diary${i + 1}.jpg`]
+}));
 
 // 4. LOVE LETTER EXACT TEXT PARAGRAPHS
 const loveLetterParagraphs = [
@@ -211,21 +212,27 @@ function setupImageFallbackWithChain(imgElement, fallbackTitle, primarySrc, fall
 }
 
 // ==========================================================================
-// DOM BUILDERS FOR HER PHOTOS & LOVE LETTER
+// DOM BUILDERS FOR HER PHOTOS & DIARY 3D BANNER DECK
 // ==========================================================================
+let currentDeckIdx = 0;
+let deckCards = [];
+
 function initDomElements() {
+  // Render Her Photos 1-5
   const container1 = document.getElementById("her-photos-1-container");
   herPhotosData.slice(0, 5).forEach((data, index) => {
     const card = createPhotoCardDom(data, index + 1);
     container1.appendChild(card);
   });
 
+  // Render Her Photos 6-10
   const container2 = document.getElementById("her-photos-2-container");
   herPhotosData.slice(5, 10).forEach((data, index) => {
     const card = createPhotoCardDom(data, index + 6);
     container2.appendChild(card);
   });
 
+  // Render Love Letter Paragraphs
   const letterContainer = document.getElementById("letter-content");
   loveLetterParagraphs.forEach((paraText) => {
     const p = document.createElement("p");
@@ -233,10 +240,14 @@ function initDomElements() {
     letterContainer.appendChild(p);
   });
 
+  // Setup Image Fallbacks for Us Photos
   const imgMy = document.getElementById("img-my");
   const imgHer = document.getElementById("img-her-us");
   setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg"]);
   setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, ["./her-photo.jpg"]);
+
+  // Render Compact 3D Diary Memory Deck Banner
+  initDiaryDeckBanner();
 }
 
 function createPhotoCardDom(data, num) {
@@ -295,12 +306,84 @@ function createPhotoCardDom(data, num) {
   return card;
 }
 
+// Compact 3D Diary Memory Deck Banner Builder
+function initDiaryDeckBanner() {
+  const stage = document.getElementById("diary-deck-stage");
+  const dotsContainer = document.getElementById("diary-dots");
+  if (!stage || !dotsContainer) return;
+
+  stage.innerHTML = "";
+  dotsContainer.innerHTML = "";
+  deckCards = [];
+
+  diaryPhotosData.forEach((data, idx) => {
+    const card = document.createElement("div");
+    card.className = "deck-card";
+    card.dataset.index = idx;
+
+    const img = document.createElement("img");
+    img.alt = `Diary Page ${data.num}`;
+    setupImageFallbackWithChain(img, `Diary Page #${data.num}`, data.src, data.fallbackSrcs);
+    card.appendChild(img);
+
+    card.addEventListener("click", () => setDeckIndex(idx));
+    stage.appendChild(card);
+    deckCards.push(card);
+
+    const dot = document.createElement("span");
+    dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+    dot.addEventListener("click", () => setDeckIndex(idx));
+    dotsContainer.appendChild(dot);
+  });
+
+  const prevBtn = document.getElementById("diary-prev-btn");
+  const nextBtn = document.getElementById("diary-next-btn");
+
+  if (prevBtn) prevBtn.addEventListener("click", () => setDeckIndex(currentDeckIdx - 1));
+  if (nextBtn) nextBtn.addEventListener("click", () => setDeckIndex(currentDeckIdx + 1));
+
+  updateDeckState();
+}
+
+function setDeckIndex(idx) {
+  const total = diaryPhotosData.length;
+  currentDeckIdx = (idx + total) % total;
+  updateDeckState();
+}
+
+function updateDeckState() {
+  const total = diaryPhotosData.length;
+
+  deckCards.forEach((card, i) => {
+    card.className = "deck-card";
+    if (i === currentDeckIdx) {
+      card.classList.add("card-active");
+    } else if (i === (currentDeckIdx + 1) % total) {
+      card.classList.add("card-next");
+    } else if (i === (currentDeckIdx - 1 + total) % total) {
+      card.classList.add("card-prev");
+    } else {
+      card.classList.add("card-hidden");
+    }
+  });
+
+  const counter = document.getElementById("diary-counter");
+  if (counter) {
+    const numStr = (currentDeckIdx + 1).toString().padStart(2, '0');
+    counter.textContent = `${numStr} / ${total.toString().padStart(2, '0')}`;
+  }
+
+  const dots = document.querySelectorAll(".diary-dots .dot");
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === currentDeckIdx);
+  });
+}
+
 // ==========================================================================
-// THREE.JS 3D ENGINE (Dust Particles, 3D Diary Stack, Hearts, Curtains)
+// THREE.JS 3D ENGINE (Dust Particles, Hearts, Curtains)
 // ==========================================================================
 let scene, camera, renderer;
 let dustParticles;
-let diaryGroup, diaryMeshCards = [];
 let heartGroup, heartInstancedMesh;
 let curtainLeft, curtainRight, curtainGroup;
 
@@ -315,8 +398,6 @@ function initThreeEngine() {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const ambientLight = new THREE.AmbientLight(0xfff0e6, 0.8);
   scene.add(ambientLight);
@@ -325,7 +406,6 @@ function initThreeEngine() {
   mainSpotlight.position.set(0, 15, 12);
   mainSpotlight.angle = Math.PI / 4;
   mainSpotlight.penumbra = 0.8;
-  mainSpotlight.castShadow = true;
   scene.add(mainSpotlight);
 
   const redFill = new THREE.PointLight(0x7a121d, 1.5, 30);
@@ -333,7 +413,6 @@ function initThreeEngine() {
   scene.add(redFill);
 
   buildDustParticles();
-  build3DDiaryCards();
   build3DHearts();
   build3DCurtains();
 
@@ -342,7 +421,7 @@ function initThreeEngine() {
 }
 
 function buildDustParticles() {
-  const count = window.innerWidth < 768 ? 150 : 350;
+  const count = window.innerWidth < 768 ? 180 : 400;
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
   const scales = new Float32Array(count);
@@ -359,73 +438,14 @@ function buildDustParticles() {
 
   const material = new THREE.PointsMaterial({
     color: 0xf7e7ce,
-    size: 0.12,
+    size: 0.14,
     transparent: true,
-    opacity: 0.45,
+    opacity: 0.5,
     blending: THREE.AdditiveBlending
   });
 
   dustParticles = new THREE.Points(geometry, material);
   scene.add(dustParticles);
-}
-
-function build3DDiaryCards() {
-  diaryGroup = new THREE.Group();
-  diaryGroup.position.set(0, 0, -20);
-  scene.add(diaryGroup);
-
-  const textureLoader = new THREE.TextureLoader();
-
-  for (let i = 0; i < CONFIG.diaryPhotoCount; i++) {
-    const cardGeom = new THREE.BoxGeometry(3.2, 4.2, 0.04);
-    
-    const imgSrc = diaryPhotos[i];
-    const texture = textureLoader.load(
-      imgSrc,
-      undefined,
-      undefined,
-      function() {
-        // Try fallback root path or jpeg extension
-        const altSrc = `./diary${i + 1}.jpg`;
-        textureLoader.load(
-          altSrc,
-          (altTex) => {
-            materials[4].map = altTex;
-            materials[4].needsUpdate = true;
-          },
-          undefined,
-          () => {
-            console.warn("Missing image: " + imgSrc);
-            const fallbackSrc = generateFallbackCanvas(`Diary Page #${i + 1}`, 600, 800);
-            textureLoader.load(fallbackSrc, (tex) => {
-              materials[4].map = tex;
-              materials[4].needsUpdate = true;
-            });
-          }
-        );
-      }
-    );
-
-    const materials = [
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
-      new THREE.MeshStandardMaterial({ map: texture, roughness: 0.4 }),
-      new THREE.MeshStandardMaterial({ color: 0x0a0406, roughness: 0.9 })
-    ];
-
-    const cardMesh = new THREE.Mesh(cardGeom, materials);
-    cardMesh.castShadow = true;
-    cardMesh.receiveShadow = true;
-
-    cardMesh.position.set(0, 0, -i * 0.6);
-    cardMesh.rotation.z = (Math.random() - 0.5) * 0.08;
-    cardMesh.visible = false;
-
-    diaryGroup.add(cardMesh);
-    diaryMeshCards.push(cardMesh);
-  }
 }
 
 function build3DHearts() {
@@ -604,48 +624,18 @@ function initScrollTimeline() {
   .to(".diary-intro-text.line-2", { opacity: 1, y: 0, duration: 1 }, "+=0.5")
   .to(".diary-intro-text.line-3", { opacity: 1, y: 0, duration: 1 }, "+=0.5");
 
-  const diaryTL = gsap.timeline({
-    scrollTrigger: {
-      trigger: "#scene-diary",
-      start: "top top",
-      end: "bottom bottom",
-      scrub: 1,
-      onEnter: () => {
-        diaryGroup.position.set(0, 0, 0);
-        document.getElementById("diary-counter").parentNode.style.opacity = "1";
-      },
-      onLeave: () => {
-        document.getElementById("diary-counter").parentNode.style.opacity = "0";
-      },
-      onEnterBack: () => {
-        document.getElementById("diary-counter").parentNode.style.opacity = "1";
-      },
-      onLeaveBack: () => {
-        document.getElementById("diary-counter").parentNode.style.opacity = "0";
+  // Scroll Trigger Sync for Compact 3D Diary Memory Deck
+  ScrollTrigger.create({
+    trigger: "#scene-diary",
+    start: "top 50%",
+    end: "bottom 50%",
+    onUpdate: (self) => {
+      const idx = Math.floor(self.progress * diaryPhotosData.length);
+      if (idx !== currentDeckIdx && idx >= 0 && idx < diaryPhotosData.length) {
+        setDeckIndex(idx);
       }
     }
   });
-
-  const hudCounter = document.getElementById("diary-counter");
-
-  diaryMeshCards.forEach((cardMesh, i) => {
-    diaryTL.to(cardMesh, {
-      onStart: () => {
-        cardMesh.visible = true;
-        const numStr = (i + 1).toString().padStart(2, '0');
-        if (hudCounter) hudCounter.textContent = `${numStr} / ${CONFIG.diaryPhotoCount}`;
-      },
-      z: 5,
-      rotationY: (i % 2 === 0 ? 0.3 : -0.3),
-      rotationX: (i % 3 === 0 ? 0.15 : -0.1),
-      opacity: 0,
-      duration: 1,
-      ease: "power1.inOut"
-    });
-  });
-
-  diaryTL.to("#diary-outro-box", { opacity: 1, duration: 1.5 })
-         .to("#diary-outro-box", { opacity: 0, duration: 1 }, "+=1");
 
   const letterParagraphs = document.querySelectorAll("#letter-content p");
   letterParagraphs.forEach((p) => {

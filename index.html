@@ -74,7 +74,7 @@
     <!-- SCENE 3: PART 1 — FARHAANN (PHOTOS 1 to 5) -->
     <section class="scene-section scene-her-part1" id="scene-her-part1">
       <div class="photos-wrapper" id="her-photos-1-container">
-        <!-- Injected via JavaScript from herPhotos array (1 to 5) -->
+        <!-- Injected via JavaScript -->
       </div>
     </section>
 
@@ -87,15 +87,31 @@
       </div>
     </section>
 
-    <!-- SCENE 5: PART 2 — HER DIARY (13 PHOTOS IN 3D) -->
-    <section class="scene-section scene-diary" id="scene-diary">
-      <div class="diary-hud">
-        <span class="diary-counter" id="diary-counter">01 / 13</span>
-        <span class="diary-caption">her effort ♡</span>
+    <!-- SCENE 5: PART 2 — HER DIARY (COMPACT INTERACTIVE 3D MEMORY DECK BANNER) -->
+    <section class="scene-section scene-diary-compact" id="scene-diary">
+      <div class="diary-banner-header">
+        <h2 class="diary-banner-title">HER DIARY</h2>
+        <p class="diary-banner-sub">every page she made with love ♡</p>
       </div>
-      <div class="diary-3d-anchor" id="diary-3d-anchor"></div>
+
+      <!-- Compact 3D Deck Showcase Stage -->
+      <div class="diary-deck-container" id="diary-deck-container">
+        <button class="deck-nav-btn btn-prev" id="diary-prev-btn" aria-label="Previous Page">‹</button>
+        
+        <div class="diary-deck-stage" id="diary-deck-stage">
+          <!-- Injected dynamically via JS as interactive 3D cards -->
+        </div>
+        
+        <button class="deck-nav-btn btn-next" id="diary-next-btn" aria-label="Next Page">›</button>
+      </div>
+
+      <div class="diary-deck-controls">
+        <div class="diary-counter" id="diary-counter">01 / 14</div>
+        <div class="diary-dots" id="diary-dots"></div>
+      </div>
+
       <div class="diary-outro-box" id="diary-outro-box">
-        <p class="diary-outro-text">13 little pieces of your heart.</p>
+        <p class="diary-outro-text">14 little pieces of your heart.</p>
         <p class="diary-outro-text accent">I noticed every one of them.</p>
       </div>
     </section>
@@ -108,7 +124,7 @@
         <h2 class="her2-intro-highlight">you.</h2>
       </div>
       <div class="photos-wrapper" id="her-photos-2-container">
-        <!-- Injected via JavaScript from herPhotos array (6 to 10) -->
+        <!-- Injected via JavaScript -->
       </div>
     </section>
 
@@ -136,7 +152,7 @@
         </div>
         <div class="us-card card-her" id="card-her">
           <div class="photo-frame">
-            <img id="img-her-us" src="./assets/us/her-photo.jpg" alt="Her Photo" />
+            <img id="img-her-us" src="./assets/us/her-photo.jpg" alt="Farhaann Photo" />
           </div>
           <span class="card-tag">Farhaann</span>
         </div>

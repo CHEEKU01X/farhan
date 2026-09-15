@@ -1,6 +1,6 @@
 /* ==========================================================================
    CINEMATIC ROMANTIC EXPERIENCE - DESIGN SYSTEM
-   Targeting Foziya (Heer)
+   Targeting Foziya (Farhaann)
    ========================================================================== */
 
 :root {
@@ -193,7 +193,7 @@ html::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px;
+  padding: 60px 20px;
 }
 
 /* --------------------------------------------------------------------------
@@ -203,7 +203,6 @@ html::-webkit-scrollbar {
   height: 100vh;
   background: #000;
   z-index: 50;
-
 }
 
 .opening-content {
@@ -309,7 +308,7 @@ html::-webkit-scrollbar {
    SCENE 2: FOZIYA INTRO
    -------------------------------------------------------------------------- */
 .scene-intro {
-  height: 120vh;
+  height: 100vh;
   text-align: center;
 }
 
@@ -351,22 +350,22 @@ html::-webkit-scrollbar {
 }
 
 /* --------------------------------------------------------------------------
-   SCENES 3 & 6: HER PHOTO CARDS (PARTS 1 & 2)
+   SCENES 3 & 6: FARHAANN PHOTO CARDS (PARTS 1 & 2)
    -------------------------------------------------------------------------- */
 .photos-wrapper {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 850px;
   display: flex;
   flex-direction: column;
-  gap: 150vh; /* Generous scroll spacing so photos feel distinct */
-  padding: 10vh 0;
+  gap: 80vh; /* Smooth, natural scroll gaps */
+  padding: 5vh 0;
 }
 
 .her-photo-card {
   position: relative;
   width: 100%;
-  min-height: 80vh;
+  min-height: 75vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -377,13 +376,13 @@ html::-webkit-scrollbar {
 
 .photo-frame-container {
   position: relative;
-  max-width: 520px;
+  max-width: 500px;
   width: 90%;
-  border-radius: 8px;
-  padding: 14px;
-  background: linear-gradient(145deg, #180a0f, #090305);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(74, 14, 23, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(145deg, #1c0a12, #090305);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 30px rgba(122, 18, 29, 0.35);
   overflow: hidden;
   transition: transform 0.6s var(--ease-cinematic);
 }
@@ -395,8 +394,8 @@ html::-webkit-scrollbar {
   left: 0;
   right: 0;
   bottom: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
   pointer-events: none;
 }
 
@@ -405,7 +404,7 @@ html::-webkit-scrollbar {
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 6px;
   display: block;
   filter: contrast(1.05) brightness(0.95);
   transition: filter 0.8s ease, transform 0.8s ease;
@@ -428,7 +427,7 @@ html::-webkit-scrollbar {
 }
 
 .photo-quote-box {
-  margin-top: 35px;
+  margin-top: 30px;
   text-align: center;
   max-width: 650px;
   padding: 0 20px;
@@ -450,7 +449,6 @@ html::-webkit-scrollbar {
   color: var(--accent-gold);
 }
 
-/* Special Childhood Photo Sequence Styling */
 .childhood-sequence {
   display: flex;
   flex-direction: column;
@@ -458,7 +456,7 @@ html::-webkit-scrollbar {
 }
 
 .childhood-sublines {
-  margin-top: 20px;
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -500,78 +498,190 @@ html::-webkit-scrollbar {
 }
 
 /* --------------------------------------------------------------------------
-   SCENE 5: DIARY 3D EXPERIENCE & COUNTER
+   SCENE 5: COMPACT INTERACTIVE 3D DIARY MEMORY DECK BANNER
    -------------------------------------------------------------------------- */
-.scene-diary {
+.scene-diary-compact {
+  min-height: 110vh;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
-  height: 450vh; /* Long scroll timeline for 18 physical diary cards */
-  width: 100%;
+  padding: 40px 10px;
 }
 
-.diary-hud {
-  position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 40;
+.diary-banner-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.diary-banner-title {
+  font-family: var(--font-serif);
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: var(--text-main);
+  background: linear-gradient(180deg, #fff 40%, var(--accent-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.diary-banner-sub {
+  font-family: var(--font-handwriting);
+  font-size: 1.8rem;
+  color: var(--accent-gold);
+  margin-top: 4px;
+}
+
+/* Interactive 3D Deck Container */
+.diary-deck-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+}
+
+.deck-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(18, 8, 12, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: var(--accent-gold);
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+}
+
+.deck-nav-btn:hover {
+  background: rgba(74, 14, 23, 0.9);
+  border-color: var(--accent-gold);
+  color: #fff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-prev { left: 10px; }
+.btn-next { right: 10px; }
+
+.diary-deck-stage {
+  position: relative;
+  width: 360px;
+  height: 480px;
+  transform-style: preserve-3d;
+}
+
+/* Individual 3D Diary Cards */
+.deck-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  padding: 10px;
+  background: linear-gradient(150deg, #1d0a12, #0a0406);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(74, 14, 23, 0.2);
+  transition: transform 0.6s var(--ease-cinematic), opacity 0.6s ease, filter 0.6s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.deck-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
+/* Deck States */
+.deck-card.card-active {
+  z-index: 20;
+  transform: translate3d(0, 0, 60px) rotateY(0deg);
+  opacity: 1;
+  filter: brightness(1.05);
+  border-color: var(--accent-gold);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 175, 55, 0.35);
+}
+
+.deck-card.card-next {
+  z-index: 10;
+  transform: translate3d(140px, 0, -80px) rotateY(-22deg);
+  opacity: 0.65;
+  filter: brightness(0.7);
+}
+
+.deck-card.card-prev {
+  z-index: 10;
+  transform: translate3d(-140px, 0, -80px) rotateY(22deg);
+  opacity: 0.65;
+  filter: brightness(0.7);
+}
+
+.deck-card.card-hidden {
+  z-index: 1;
+  transform: translate3d(0, 0, -250px) scale(0.7);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Controls Bar */
+.diary-deck-controls {
+  margin-top: 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 24px;
-  background: rgba(10, 5, 8, 0.7);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 30px;
-  backdrop-filter: blur(10px);
-  opacity: 0;
-  transition: opacity 0.5s ease;
+  gap: 12px;
 }
 
 .diary-counter {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 3px;
   color: var(--accent-gold);
 }
 
-.diary-caption {
-  font-family: var(--font-handwriting);
-  font-size: 1.1rem;
-  color: var(--text-muted);
+.diary-dots {
+  display: flex;
+  gap: 8px;
 }
 
-.diary-outro-box {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 45;
-  text-align: center;
-  opacity: 0;
-  pointer-events: none;
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.25);
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.diary-outro-text {
-  font-family: var(--font-serif);
-  font-size: 2.5rem;
-  color: var(--text-cream);
-  margin: 10px 0;
-}
-
-.diary-outro-text.accent {
-  font-family: var(--font-handwriting);
-  font-size: 3rem;
-  color: var(--accent-gold);
+.dot.active {
+  background: var(--accent-gold);
+  transform: scale(1.3);
+  box-shadow: 0 0 10px var(--accent-gold);
 }
 
 /* --------------------------------------------------------------------------
-   SCENE 6: HER PART 2 INTRO
+   SCENE 6: FARHAANN PART 2 INTRO
    -------------------------------------------------------------------------- */
 .her2-intro-box {
   text-align: center;
   max-width: 700px;
-  margin-bottom: 20vh;
+  margin-bottom: 10vh;
 }
 
 .her2-intro-text {
@@ -592,13 +702,13 @@ html::-webkit-scrollbar {
    SCENE 7: FINAL LOVE LETTER
    -------------------------------------------------------------------------- */
 .scene-love-letter {
-  min-height: 250vh; /* Scroll-driven line by line reveal */
+  min-height: 180vh; /* Smooth line by line reveal */
   flex-direction: column;
 }
 
 .letter-intro-box {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
 }
 
 .letter-intro-text {
@@ -618,7 +728,7 @@ html::-webkit-scrollbar {
   position: relative;
   max-width: 750px;
   width: 90%;
-  padding: 60px 45px;
+  padding: 50px 40px;
   background: linear-gradient(165deg, rgba(20, 10, 15, 0.95), rgba(10, 5, 8, 0.95));
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 12px;
@@ -648,15 +758,15 @@ html::-webkit-scrollbar {
    SCENE 8: OUR PHOTOS
    -------------------------------------------------------------------------- */
 .scene-us-photos {
-  height: 180vh;
+  height: 140vh;
   flex-direction: column;
 }
 
 .us-stage {
   position: relative;
   width: 100%;
-  max-width: 900px;
-  height: 480px;
+  max-width: 850px;
+  height: 440px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -664,7 +774,7 @@ html::-webkit-scrollbar {
 
 .us-card {
   position: absolute;
-  width: 320px;
+  width: 300px;
   padding: 12px;
   background: #14090d;
   border: 1px solid rgba(212, 175, 55, 0.4);
@@ -705,7 +815,7 @@ html::-webkit-scrollbar {
 }
 
 .us-merged-title {
-  margin-top: 50px;
+  margin-top: 40px;
   text-align: center;
   opacity: 0;
   transform: scale(0.9);
@@ -734,7 +844,7 @@ html::-webkit-scrollbar {
    SCENE 9 & 10: LOVE CLIMAX & 3D HEARTS
    -------------------------------------------------------------------------- */
 .scene-love-climax {
-  height: 200vh;
+  height: 150vh;
   flex-direction: column;
   text-align: center;
 }
@@ -769,7 +879,7 @@ html::-webkit-scrollbar {
 
 .scene-finale {
   position: relative;
-  height: 250vh;
+  height: 200vh;
   width: 100%;
 }
 
@@ -843,8 +953,25 @@ html::-webkit-scrollbar {
     font-size: 1.5rem;
   }
 
+  .diary-banner-title {
+    font-size: 2.4rem;
+  }
+
+  .diary-deck-stage {
+    width: 280px;
+    height: 380px;
+  }
+
+  .deck-card.card-next {
+    transform: translate3d(80px, 0, -80px) rotateY(-22deg);
+  }
+
+  .deck-card.card-prev {
+    transform: translate3d(-80px, 0, -80px) rotateY(22deg);
+  }
+
   .letter-card {
-    padding: 35px 22px;
+    padding: 30px 18px;
   }
 
   .letter-content p {
@@ -857,34 +984,22 @@ html::-webkit-scrollbar {
   }
 
   .us-stage {
-    height: 380px;
+    height: 350px;
   }
 
   .us-card {
-    width: 220px;
+    width: 200px;
   }
 
   .card-my {
-    transform: translateX(-80px) rotate(-5deg);
+    transform: translateX(-70px) rotate(-5deg);
   }
 
   .card-her {
-    transform: translateX(80px) rotate(5deg);
+    transform: translateX(70px) rotate(5deg);
   }
 
   .us-heading {
     font-size: 3rem;
-  }
-
-  .curtain-line-1 {
-    font-size: 2rem;
-  }
-
-  .curtain-line-2 {
-    font-size: 2.5rem;
-  }
-
-  .hearts-center-message h1 {
-    font-size: 2.4rem;
   }
 }
