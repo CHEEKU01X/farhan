@@ -548,6 +548,7 @@ let scene, camera, renderer;
 let dustParticles;
 let heartGroup, heartInstancedMesh;
 let curtainLeft, curtainRight, curtainGroup;
+let avatarGroup, avatarLegLeft, avatarLegRight, avatarArmLeft, avatarArmRight, avatarPageGroup, avatarPageLeft, avatarPageRight;
 
 function initThreeEngine() {
   const canvas = document.getElementById("webgl-canvas");
@@ -577,6 +578,7 @@ function initThreeEngine() {
   buildDustParticles();
   build3DHearts();
   build3DCurtains();
+  build3DCartoonAvatar();
 
   window.addEventListener("resize", onWindowResize);
   animateLoop();
@@ -697,6 +699,157 @@ function build3DCurtains() {
   curtainGroup.add(curtainRight);
 }
 
+function build3DCartoonAvatar() {
+  avatarGroup = new THREE.Group();
+  avatarGroup.position.set(0, -1.6, -14); // Starts in 3D background
+  avatarGroup.visible = false;
+  scene.add(avatarGroup);
+
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xffdfd3, roughness: 0.4 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x1a0f12, roughness: 0.3 });
+  const outfitMat = new THREE.MeshStandardMaterial({ color: 0x4a0e17, roughness: 0.5, metalness: 0.2 });
+  const accentMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.2, metalness: 0.8 });
+  const eyeMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+
+  // 1. Head
+  const headGeom = new THREE.SphereGeometry(0.55, 32, 32);
+  const head = new THREE.Mesh(headGeom, skinMat);
+  head.position.set(0, 1.85, 0);
+  avatarGroup.add(head);
+
+  // Hair
+  const hairGeom = new THREE.SphereGeometry(0.58, 24, 24, 0, Math.PI * 2, 0, Math.PI * 0.55);
+  const hair = new THREE.Mesh(hairGeom, hairMat);
+  hair.position.set(0, 1.88, 0);
+  hair.rotation.x = -0.1;
+  avatarGroup.add(hair);
+
+  // Eyes & Blush
+  const eyeGeom = new THREE.SphereGeometry(0.06, 16, 16);
+  const eyeL = new THREE.Mesh(eyeGeom, eyeMat);
+  eyeL.position.set(-0.18, 1.9, 0.48);
+  const eyeR = new THREE.Mesh(eyeGeom, eyeMat);
+  eyeR.position.set(0.18, 1.9, 0.48);
+  avatarGroup.add(eyeL);
+  avatarGroup.add(eyeR);
+
+  const blushMat = new THREE.MeshBasicMaterial({ color: 0xff88a0, transparent: true, opacity: 0.6 });
+  const blushGeom = new THREE.CircleGeometry(0.08, 16);
+  const blushL = new THREE.Mesh(blushGeom, blushMat);
+  blushL.position.set(-0.25, 1.78, 0.51);
+  const blushR = new THREE.Mesh(blushGeom, blushMat);
+  blushR.position.set(0.25, 1.78, 0.51);
+  avatarGroup.add(blushL);
+  avatarGroup.add(blushR);
+
+  // 2. Torso & Belt
+  const torsoGeom = new THREE.CylinderGeometry(0.35, 0.45, 1.0, 16);
+  const torso = new THREE.Mesh(torsoGeom, outfitMat);
+  torso.position.set(0, 0.95, 0);
+  avatarGroup.add(torso);
+
+  const beltGeom = new THREE.CylinderGeometry(0.42, 0.44, 0.08, 16);
+  const belt = new THREE.Mesh(beltGeom, accentMat);
+  belt.position.set(0, 0.55, 0);
+  avatarGroup.add(belt);
+
+  // 3. Legs
+  const legGeom = new THREE.CylinderGeometry(0.12, 0.1, 0.8, 16);
+  legGeom.translate(0, -0.4, 0);
+
+  avatarLegLeft = new THREE.Mesh(legGeom, outfitMat);
+  avatarLegLeft.position.set(-0.2, 0.5, 0);
+  avatarGroup.add(avatarLegLeft);
+
+  avatarLegRight = new THREE.Mesh(legGeom, outfitMat);
+  avatarLegRight.position.set(0.2, 0.5, 0);
+  avatarGroup.add(avatarLegRight);
+
+  const shoeGeom = new THREE.BoxGeometry(0.16, 0.1, 0.26);
+  const shoeL = new THREE.Mesh(shoeGeom, accentMat);
+  shoeL.position.set(0, -0.8, 0.05);
+  avatarLegLeft.add(shoeL);
+  const shoeR = new THREE.Mesh(shoeGeom, accentMat);
+  shoeR.position.set(0, -0.8, 0.05);
+  avatarLegRight.add(shoeR);
+
+  // 4. Arms
+  const armGeom = new THREE.CylinderGeometry(0.09, 0.08, 0.7, 16);
+  armGeom.translate(0, -0.35, 0);
+
+  avatarArmLeft = new THREE.Mesh(armGeom, outfitMat);
+  avatarArmLeft.position.set(-0.42, 1.35, 0);
+  avatarArmLeft.rotation.z = 0.3;
+  avatarArmLeft.rotation.x = -0.5;
+  avatarGroup.add(avatarArmLeft);
+
+  avatarArmRight = new THREE.Mesh(armGeom, outfitMat);
+  avatarArmRight.position.set(0.42, 1.35, 0);
+  avatarArmRight.rotation.z = -0.3;
+  avatarArmRight.rotation.x = -0.5;
+  avatarGroup.add(avatarArmRight);
+
+  // 5. 3D LETTER PAGE WRITTEN "I LOVE YOU"
+  avatarPageGroup = new THREE.Group();
+  avatarPageGroup.position.set(0, 1.1, 0.5);
+  avatarGroup.add(avatarPageGroup);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 384;
+  const ctx = canvas.getContext("2d");
+
+  const grad = ctx.createLinearGradient(0, 0, 512, 384);
+  grad.addColorStop(0, "#1d0810");
+  grad.addColorStop(0.5, "#380b15");
+  grad.addColorStop(1, "#120408");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 384);
+
+  ctx.strokeStyle = "#d4af37";
+  ctx.lineWidth = 10;
+  ctx.strokeRect(15, 15, 482, 354);
+  ctx.lineWidth = 2;
+  ctx.strokeRect(22, 22, 468, 340);
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "italic bold 46px serif";
+  ctx.fillStyle = "#ffffff";
+  ctx.shadowColor = "#d4af37";
+  ctx.shadowBlur = 18;
+  ctx.fillText("I LOVE YOU", 256, 160);
+
+  ctx.font = "italic 32px serif";
+  ctx.fillStyle = "#d4af37";
+  ctx.fillText("♡ Farhaann ♡", 256, 235);
+
+  const pageTex = new THREE.CanvasTexture(canvas);
+  pageTex.needsUpdate = true;
+
+  const pageMat = new THREE.MeshStandardMaterial({
+    map: pageTex,
+    roughness: 0.3,
+    metalness: 0.1,
+    side: THREE.DoubleSide
+  });
+
+  const pageWidth = 1.6;
+  const pageHeight = 1.1;
+
+  const pageGeomL = new THREE.PlaneGeometry(pageWidth / 2, pageHeight);
+  pageGeomL.translate(pageWidth / 4, 0, 0);
+  avatarPageLeft = new THREE.Mesh(pageGeomL, pageMat);
+  avatarPageLeft.rotation.y = Math.PI * 0.45; // folded initially
+  avatarPageGroup.add(avatarPageLeft);
+
+  const pageGeomR = new THREE.PlaneGeometry(pageWidth / 2, pageHeight);
+  pageGeomR.translate(-pageWidth / 4, 0, 0);
+  avatarPageRight = new THREE.Mesh(pageGeomR, pageMat);
+  avatarPageRight.rotation.y = -Math.PI * 0.45; // folded initially
+  avatarPageGroup.add(avatarPageRight);
+}
+
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -713,6 +866,20 @@ function animateLoop() {
 
   if (heartGroup && heartGroup.visible) {
     heartGroup.rotation.y += 0.0025;
+  }
+
+  if (avatarGroup && avatarGroup.visible) {
+    const time = Date.now() * 0.004;
+    if (avatarLegLeft && avatarLegRight) {
+      avatarLegLeft.rotation.x = Math.sin(time * 5) * 0.45;
+      avatarLegRight.rotation.x = -Math.sin(time * 5) * 0.45;
+    }
+    avatarGroup.position.y = -1.6 + Math.abs(Math.sin(time * 10)) * 0.08;
+
+    if (avatarPageLeft && avatarPageRight) {
+      avatarPageLeft.rotation.y = THREE.MathUtils.lerp(avatarPageLeft.rotation.y, 0, 0.04);
+      avatarPageRight.rotation.y = THREE.MathUtils.lerp(avatarPageRight.rotation.y, 0, 0.04);
+    }
   }
 
   renderer.render(scene, camera);
@@ -861,6 +1028,24 @@ function initScrollTimeline() {
   const climaxText = document.getElementById("climax-text");
   const fullText = "I LOVE YOU";
   
+  // 3D CARTOON AVATAR WALKING IN BACKGROUND & OPENING "I LOVE YOU" PAGE
+  ScrollTrigger.create({
+    trigger: "#scene-love-climax",
+    start: "top 80%",
+    end: "bottom top",
+    onEnter: () => {
+      if (avatarGroup) {
+        avatarGroup.visible = true;
+        gsap.to(avatarGroup.position, { z: 3.5, duration: 2.5, ease: "power2.out" });
+      }
+    },
+    onLeaveBack: () => {
+      if (avatarGroup) {
+        gsap.to(avatarGroup.position, { z: -14, duration: 1.2, onComplete: () => { avatarGroup.visible = false; } });
+      }
+    }
+  });
+
   const climaxTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-love-climax",
