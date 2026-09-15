@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FOZIYA / FARHAANN - CINEMATIC LOVE WEBSITE SCRIPT (3D ENHANCED)
+   FOZIYA / FARHAANN - CINEMATIC LOVE WEBSITE SCRIPT (PERFECT 3D & DUAL BANNERS)
    ========================================================================== */
 
 // 1. CONFIGURATION OBJECT
@@ -212,24 +212,43 @@ function setupImageFallbackWithChain(imgElement, fallbackTitle, primarySrc, fall
 }
 
 // ==========================================================================
-// DOM BUILDERS FOR HER PHOTOS & 3D INTERACTIVE DIARY DECK
+// DOM BUILDERS FOR DUAL-PHOTO BANNERS & 3D INTERACTIVE DIARY DECK
 // ==========================================================================
 let currentDeckIdx = 0;
 let deckCards = [];
 
 function initDomElements() {
+  // Render Her Photos 1-5 in Dual-Photo Banner Pairs
   const container1 = document.getElementById("her-photos-1-container");
-  herPhotosData.slice(0, 5).forEach((data, index) => {
-    const card = createPhotoCardDom(data, index + 1);
-    container1.appendChild(card);
-  });
 
+  // Pair 1: Photos 1 & 2
+  const pair1 = createBannerPairDom([herPhotosData[0], herPhotosData[1]], 1, "#1c080e");
+  container1.appendChild(pair1);
+
+  // Pair 2: Photos 3 & 4
+  const pair2 = createBannerPairDom([herPhotosData[2], herPhotosData[3]], 2, "#231508");
+  container1.appendChild(pair2);
+
+  // Single Feature 5
+  const single5 = createBannerSingleDom(herPhotosData[4], 5, "#12040c");
+  container1.appendChild(single5);
+
+  // Render Her Photos 6-10 in Dual-Photo Banner Pairs
   const container2 = document.getElementById("her-photos-2-container");
-  herPhotosData.slice(5, 10).forEach((data, index) => {
-    const card = createPhotoCardDom(data, index + 6);
-    container2.appendChild(card);
-  });
 
+  // Pair 3: Photos 6 & 7
+  const pair3 = createBannerPairDom([herPhotosData[5], herPhotosData[6]], 3, "#18060a");
+  container2.appendChild(pair3);
+
+  // Pair 4: Photos 8 & 9
+  const pair4 = createBannerPairDom([herPhotosData[7], herPhotosData[8]], 4, "#1a1205");
+  container2.appendChild(pair4);
+
+  // Single Feature 10 (Childhood Memory)
+  const single10 = createBannerSingleDom(herPhotosData[9], 10, "#240912");
+  container2.appendChild(single10);
+
+  // Render Love Letter Paragraphs
   const letterContainer = document.getElementById("letter-content");
   loveLetterParagraphs.forEach((paraText) => {
     const p = document.createElement("p");
@@ -237,13 +256,39 @@ function initDomElements() {
     letterContainer.appendChild(p);
   });
 
+  // Setup Image Fallbacks for Us Photos (my-photo & her-photo)
   const imgMy = document.getElementById("img-my");
   const imgHer = document.getElementById("img-her-us");
-  setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg"]);
-  setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, ["./her-photo.jpg"]);
+  setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg", "./my-photo.jpeg", "./assets/us/my-photo.jpeg"]);
+  setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, ["./her-photo.jpg", "./her-photo.jpeg", "./assets/her/her10.jpeg", "./assets/her/her10.jpg"]);
 
   initDiaryDeckBanner();
   initMouse3DTilt();
+}
+
+function createBannerPairDom(photosArray, bannerIdx, bgColor) {
+  const bannerRow = document.createElement("div");
+  bannerRow.className = "banner-pair-row";
+  bannerRow.dataset.bgColor = bgColor;
+
+  photosArray.forEach((data, i) => {
+    const photoNum = (bannerIdx - 1) * 2 + i + 1;
+    const card = createPhotoCardDom(data, photoNum);
+    bannerRow.appendChild(card);
+  });
+
+  return bannerRow;
+}
+
+function createBannerSingleDom(data, photoNum, bgColor) {
+  const bannerRow = document.createElement("div");
+  bannerRow.className = "banner-single-row";
+  bannerRow.dataset.bgColor = bgColor;
+
+  const card = createPhotoCardDom(data, photoNum);
+  bannerRow.appendChild(card);
+
+  return bannerRow;
 }
 
 function createPhotoCardDom(data, num) {
@@ -308,7 +353,6 @@ function initMouse3DTilt() {
     const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
     const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
 
-    // Smoothly tilt active visible photo cards
     const frames = document.querySelectorAll(".photo-frame-container");
     frames.forEach((frame) => {
       const rect = frame.getBoundingClientRect();
@@ -321,7 +365,6 @@ function initMouse3DTilt() {
       }
     });
 
-    // Update Three.js 3D Camera Parallax
     if (camera) {
       camera.position.x += (mouseX * 1.5 - camera.position.x) * 0.05;
       camera.position.y += (-mouseY * 1.5 - camera.position.y) * 0.05;
@@ -526,7 +569,7 @@ function build3DHearts() {
 function build3DCurtains() {
   curtainGroup = new THREE.Group();
   curtainGroup.position.set(0, 0, 4);
-  curtainGroup.visible = false;
+  curtainGroup.visible = true; // Visible at start for Curtains Opening Scene!
   scene.add(curtainGroup);
 
   const width = 12;
@@ -550,10 +593,10 @@ function build3DCurtains() {
   });
 
   curtainLeft = new THREE.Mesh(geom, curtainMat);
-  curtainLeft.position.set(-width / 2 - 4, 0, 0);
+  curtainLeft.position.set(-width / 4, 0, 0); // Closed start position
 
   curtainRight = new THREE.Mesh(geom, curtainMat);
-  curtainRight.position.set(width / 2 + 4, 0, 0);
+  curtainRight.position.set(width / 4, 0, 0); // Closed start position
 
   curtainGroup.add(curtainLeft);
   curtainGroup.add(curtainRight);
@@ -581,13 +624,15 @@ function animateLoop() {
 }
 
 // ==========================================================================
-// GSAP & SCROLLTRIGGER TIMELINE
+// GSAP & SCROLLTRIGGER TIMELINE (CURTAINS OPENING, ZOOM SLIDE, BG LIGHT SHIFTS)
 // ==========================================================================
 function initScrollTimeline() {
   gsap.registerPlugin(ScrollTrigger);
 
-  runOpeningTypewriter();
+  // START SCENE 1: 3D CURTAINS OPENING AT LAUNCH
+  runOpeningCurtainsAndTypewriter();
 
+  // FOZIYA TITLE SCALING
   gsap.to("#hero-title", {
     scrollTrigger: {
       trigger: "#scene-intro",
@@ -600,40 +645,60 @@ function initScrollTimeline() {
     ease: "power2.inOut"
   });
 
-  herPhotosData.forEach((data, idx) => {
-    const cardNum = idx + 1;
-    const cardEl = document.getElementById(`her-card-${cardNum}`);
-    if (!cardEl) return;
+  // Photo Cards Reveal & Dynamic BG Lighting Shift
+  const bannerRows = document.querySelectorAll(".banner-pair-row, .banner-single-row");
+  bannerRows.forEach((row) => {
+    const cards = row.querySelectorAll(".her-photo-card");
+    const bgColor = row.dataset.bgColor || "#050505";
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: cardEl,
-        start: "top 75%",
-        end: "bottom 25%",
-        toggleActions: "play reverse play reverse"
+    ScrollTrigger.create({
+      trigger: row,
+      start: "top 70%",
+      end: "bottom 30%",
+      onEnter: () => {
+        document.body.style.backgroundColor = bgColor;
+      },
+      onEnterBack: () => {
+        document.body.style.backgroundColor = bgColor;
       }
     });
 
-    tl.to(cardEl, {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: "power3.out"
-    });
+    cards.forEach((cardEl, idx) => {
+      const cardNum = cardEl.id.replace("her-card-", "");
+      const data = herPhotosData[cardNum - 1] || {};
 
-    if (data.type === "flash") {
-      const flashEl = cardEl.querySelector(".flash-effect");
-      tl.to(flashEl, { opacity: 1, duration: 0.08 }, 0.2)
-        .to(flashEl, { opacity: 0, duration: 0.6 }, 0.3);
-    } else if (data.type === "blur") {
-      const imgEl = cardEl.querySelector(".her-img");
-      tl.to(imgEl, { filter: "blur(0px) brightness(1)", duration: 1.2 }, 0.2);
-    } else if (data.type === "childhood") {
-      const lines = cardEl.querySelectorAll(".childhood-line");
-      lines.forEach((line, lIdx) => {
-        tl.to(line, { opacity: 1, y: 0, duration: 0.8 }, 0.5 + lIdx * 0.7);
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: row,
+          start: "top 75%",
+          end: "bottom 25%",
+          toggleActions: "play reverse play reverse"
+        }
       });
-    }
+
+      tl.to(cardEl, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out"
+      }, idx * 0.2);
+
+      if (data.type === "flash") {
+        const flashEl = cardEl.querySelector(".flash-effect");
+        if (flashEl) {
+          tl.to(flashEl, { opacity: 1, duration: 0.08 }, 0.2)
+            .to(flashEl, { opacity: 0, duration: 0.6 }, 0.3);
+        }
+      } else if (data.type === "blur") {
+        const imgEl = cardEl.querySelector(".her-img");
+        if (imgEl) tl.to(imgEl, { filter: "blur(0px) brightness(1)", duration: 1.2 }, 0.2);
+      } else if (data.type === "childhood") {
+        const lines = cardEl.querySelectorAll(".childhood-line");
+        lines.forEach((line, lIdx) => {
+          tl.to(line, { opacity: 1, y: 0, duration: 0.8 }, 0.4 + lIdx * 0.6);
+        });
+      }
+    });
   });
 
   gsap.timeline({
@@ -648,7 +713,6 @@ function initScrollTimeline() {
   .to(".diary-intro-text.line-2", { opacity: 1, y: 0, duration: 1 }, "+=0.5")
   .to(".diary-intro-text.line-3", { opacity: 1, y: 0, duration: 1 }, "+=0.5");
 
-  // Scroll Trigger Sync for Compact 3D Diary Memory Deck
   ScrollTrigger.create({
     trigger: "#scene-diary",
     start: "top 50%",
@@ -673,6 +737,7 @@ function initScrollTimeline() {
     });
   });
 
+  // SCENE 8: OUR PHOTOS MERGING WITH 3D LIGHT BURST
   const usTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-us-photos",
@@ -682,12 +747,13 @@ function initScrollTimeline() {
     }
   });
 
-  usTL.to("#card-my", { x: -30, rotate: 0, duration: 2 })
-      .to("#card-her", { x: 30, rotate: 0, duration: 2 }, 0)
-      .to("#card-my", { x: 0, scale: 1.05, duration: 1 }, 2)
-      .to("#card-her", { x: 0, scale: 1.05, duration: 1 }, 2)
+  usTL.to("#card-my", { x: -20, rotate: 0, duration: 2 })
+      .to("#card-her", { x: 20, rotate: 0, duration: 2 }, 0)
+      .to("#card-my", { x: 0, scale: 1.08, duration: 1 }, 2)
+      .to("#card-her", { x: 0, scale: 1.08, duration: 1 }, 2)
       .to("#us-merged-title", { opacity: 1, scale: 1, duration: 1.2 }, 3);
 
+  // SCENE 9: CLIMAX TYPEWRITER & EXTREME ZOOM
   const climaxText = document.getElementById("climax-text");
   const fullText = "I LOVE YOU";
   
@@ -717,6 +783,7 @@ function initScrollTimeline() {
     ease: "power3.in"
   });
 
+  // SCENE 10, 11, 12: FINALE 3D HEARTS & CLOSING CURTAINS
   const finaleTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-finale",
@@ -737,21 +804,29 @@ function initScrollTimeline() {
          .to("#curtains-message", { opacity: 1, duration: 2 }, 6);
 }
 
-function runOpeningTypewriter() {
+// 3D Curtains Opening at Launch & Enter Button Zoom Slide Transition
+function runOpeningCurtainsAndTypewriter() {
   const line1 = document.getElementById("tw-1");
   const line2 = document.getElementById("tw-2");
   const line3 = document.getElementById("tw-3");
   const enterBtn = document.getElementById("enter-btn");
 
-  const tl = gsap.timeline({ delay: 0.5 });
+  const tl = gsap.timeline({ delay: 0.3 });
 
+  // 1. 3D Curtains Slowly Draw Open to Left & Right
+  if (curtainLeft && curtainRight) {
+    tl.to(curtainLeft.position, { x: -9, duration: 2.2, ease: "power2.inOut" }, 0)
+      .to(curtainRight.position, { x: 9, duration: 2.2, ease: "power2.inOut" }, 0);
+  }
+
+  // 2. Typewriter Sequence
   tl.to(line1, { opacity: 1, duration: 0.4 })
-    .to({}, { duration: 0.6, onStart: () => { line1.textContent = "hey..."; } })
-    .to(line2, { opacity: 1, duration: 0.4 }, "+=0.8")
+    .to({}, { duration: 0.5, onStart: () => { line1.textContent = "hey..."; } })
+    .to(line2, { opacity: 1, duration: 0.4 }, "+=0.6")
     .to({}, { duration: 0.8, onStart: () => { line2.textContent = "HEY GORGEOUS BABY"; } })
-    .to(line3, { opacity: 1, duration: 0.4 }, "+=0.8")
+    .to(line3, { opacity: 1, duration: 0.4 }, "+=0.6")
     .to({}, { duration: 0.8, onStart: () => { line3.textContent = "this little world is for you."; } })
-    .to(enterBtn, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "+=0.5");
+    .to(enterBtn, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "+=0.4");
 }
 
 let audioContext, bgAudioEl;
@@ -762,11 +837,10 @@ function initAudioSystem() {
   const enterBtn = document.getElementById("enter-btn");
 
   enterBtn.addEventListener("click", () => {
-    gsap.to(window, {
-      scrollTo: "#scene-intro",
-      duration: 1.5,
-      ease: "power2.inOut"
-    });
+    // 3D Zoom Slide Camera Push Transition into FOZIYA Hero Intro
+    gsap.timeline()
+      .to(".opening-content", { scale: 1.6, opacity: 0, duration: 1, ease: "power3.in" })
+      .to(window, { scrollTo: "#scene-intro", duration: 1.2, ease: "power2.inOut" }, 0.4);
 
     playAudioTrack();
   });
