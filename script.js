@@ -1,5 +1,6 @@
 /* ==========================================================================
-   FOZIYA / FARHAANN - CINEMATIC LOVE WEBSITE SCRIPT (PERFECT 3D & DUAL BANNERS)
+   $100K CINEMATIC ROMANTIC EXPERIENCE - SCRIPT ENGINE
+   Targeting Foziya (Farhaann)
    ========================================================================== */
 
 // 1. CONFIGURATION OBJECT
@@ -212,43 +213,121 @@ function setupImageFallbackWithChain(imgElement, fallbackTitle, primarySrc, fall
 }
 
 // ==========================================================================
+// DESKTOP CUSTOM LUXURY CURSOR SYSTEM
+// ==========================================================================
+let mouseX = 0, mouseY = 0;
+let cursorDotX = 0, cursorDotY = 0;
+let cursorHaloX = 0, cursorHaloY = 0;
+
+function initCustomCursor() {
+  const cursorContainer = document.getElementById("custom-cursor");
+  const dot = cursorContainer ? cursorContainer.querySelector(".cursor-dot") : null;
+  const halo = cursorContainer ? cursorContainer.querySelector(".cursor-halo") : null;
+  const badge = document.getElementById("cursor-badge");
+  const badgeText = document.getElementById("badge-text");
+
+  if (!dot || !halo) return;
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function renderCursor() {
+    cursorDotX += (mouseX - cursorDotX) * 0.4;
+    cursorDotY += (mouseY - cursorDotY) * 0.4;
+
+    cursorHaloX += (mouseX - cursorHaloX) * 0.18;
+    cursorHaloY += (mouseY - cursorHaloY) * 0.18;
+
+    dot.style.transform = `translate3d(${cursorDotX}px, ${cursorDotY}px, 0) translate(-50%, -50%)`;
+    halo.style.transform = `translate3d(${cursorHaloX}px, ${cursorHaloY}px, 0) translate(-50%, -50%)`;
+
+    if (badge) {
+      badge.style.transform = `translate3d(${cursorHaloX}px, ${cursorHaloY}px, 0) translate(-50%, -50%)`;
+    }
+
+    requestAnimationFrame(renderCursor);
+  }
+
+  renderCursor();
+
+  // Attach hover triggers
+  document.addEventListener("mouseover", (e) => {
+    const target = e.target.closest("[data-cursor], .photo-frame-container, button, .deck-card");
+    if (target) {
+      cursorContainer.classList.add("hovering");
+      const customText = target.getAttribute("data-cursor") || (target.classList.contains("photo-frame-container") ? "VIEW" : null);
+      if (customText) {
+        badgeText.textContent = customText;
+        cursorContainer.classList.add("badged");
+      }
+    }
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    const target = e.target.closest("[data-cursor], .photo-frame-container, button, .deck-card");
+    if (target) {
+      cursorContainer.classList.remove("hovering", "badged");
+    }
+  });
+}
+
+// ==========================================================================
+// CINEMATIC PRELOADER ENGINE
+// ==========================================================================
+function initCinematicPreloader() {
+  const preloader = document.getElementById("preloader");
+  const line = document.getElementById("preloader-line");
+  const spark = document.getElementById("preloader-spark");
+
+  if (!preloader || !line) return;
+
+  setTimeout(() => {
+    line.style.width = "100%";
+  }, 200);
+
+  setTimeout(() => {
+    if (spark) spark.style.opacity = "1";
+  }, 1400);
+
+  setTimeout(() => {
+    preloader.style.opacity = "0";
+    setTimeout(() => {
+      preloader.style.visibility = "hidden";
+    }, 1200);
+  }, 2200);
+}
+
+// ==========================================================================
 // DOM BUILDERS FOR DUAL-PHOTO BANNERS & 3D INTERACTIVE DIARY DECK
 // ==========================================================================
 let currentDeckIdx = 0;
 let deckCards = [];
 
 function initDomElements() {
-  // Render Her Photos 1-5 in Dual-Photo Banner Pairs
   const container1 = document.getElementById("her-photos-1-container");
 
-  // Pair 1: Photos 1 & 2
-  const pair1 = createBannerPairDom([herPhotosData[0], herPhotosData[1]], 1, "#1c080e");
+  const pair1 = createBannerPairDom([herPhotosData[0], herPhotosData[1]], 1, "#1c0409");
   container1.appendChild(pair1);
 
-  // Pair 2: Photos 3 & 4
-  const pair2 = createBannerPairDom([herPhotosData[2], herPhotosData[3]], 2, "#231508");
+  const pair2 = createBannerPairDom([herPhotosData[2], herPhotosData[3]], 2, "#261508");
   container1.appendChild(pair2);
 
-  // Single Feature 5
   const single5 = createBannerSingleDom(herPhotosData[4], 5, "#12040c");
   container1.appendChild(single5);
 
-  // Render Her Photos 6-10 in Dual-Photo Banner Pairs
   const container2 = document.getElementById("her-photos-2-container");
 
-  // Pair 3: Photos 6 & 7
-  const pair3 = createBannerPairDom([herPhotosData[5], herPhotosData[6]], 3, "#18060a");
+  const pair3 = createBannerPairDom([herPhotosData[5], herPhotosData[6]], 3, "#1a060b");
   container2.appendChild(pair3);
 
-  // Pair 4: Photos 8 & 9
-  const pair4 = createBannerPairDom([herPhotosData[7], herPhotosData[8]], 4, "#1a1205");
+  const pair4 = createBannerPairDom([herPhotosData[7], herPhotosData[8]], 4, "#1d1205");
   container2.appendChild(pair4);
 
-  // Single Feature 10 (Childhood Memory)
-  const single10 = createBannerSingleDom(herPhotosData[9], 10, "#240912");
+  const single10 = createBannerSingleDom(herPhotosData[9], 10, "#260914");
   container2.appendChild(single10);
 
-  // Render Love Letter Paragraphs
   const letterContainer = document.getElementById("letter-content");
   loveLetterParagraphs.forEach((paraText) => {
     const p = document.createElement("p");
@@ -256,7 +335,6 @@ function initDomElements() {
     letterContainer.appendChild(p);
   });
 
-  // Setup Image Fallbacks for Us Photos (my-photo & her-photo)
   const imgMy = document.getElementById("img-my");
   const imgHer = document.getElementById("img-her-us");
   setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg", "./my-photo.jpeg", "./assets/us/my-photo.jpeg"]);
@@ -298,6 +376,7 @@ function createPhotoCardDom(data, num) {
 
   const frameContainer = document.createElement("div");
   frameContainer.className = "photo-frame-container";
+  frameContainer.setAttribute("data-cursor", "VIEW");
 
   if (data.type === "flash") {
     const flash = document.createElement("div");
@@ -350,15 +429,15 @@ function createPhotoCardDom(data, num) {
 // 3D Interactive Mouse Tilt Effect on Photo Frames
 function initMouse3DTilt() {
   document.addEventListener("mousemove", (e) => {
-    const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    const mouseXNorm = (e.clientX / window.innerWidth - 0.5) * 2;
+    const mouseYNorm = (e.clientY / window.innerHeight - 0.5) * 2;
 
     const frames = document.querySelectorAll(".photo-frame-container");
     frames.forEach((frame) => {
       const rect = frame.getBoundingClientRect();
       if (rect.top < window.innerHeight && rect.bottom > 0) {
-        const rotX = -mouseY * 8;
-        const rotY = mouseX * 8;
+        const rotX = -mouseYNorm * 6; // ±2° to ±6° subtle tilt
+        const rotY = mouseXNorm * 6;
         frame.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
       } else {
         frame.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
@@ -366,8 +445,8 @@ function initMouse3DTilt() {
     });
 
     if (camera) {
-      camera.position.x += (mouseX * 1.5 - camera.position.x) * 0.05;
-      camera.position.y += (-mouseY * 1.5 - camera.position.y) * 0.05;
+      camera.position.x += (mouseXNorm * 1.5 - camera.position.x) * 0.05;
+      camera.position.y += (-mouseYNorm * 1.5 - camera.position.y) * 0.05;
       camera.lookAt(0, 0, 0);
     }
   });
@@ -387,6 +466,7 @@ function initDiaryDeckBanner() {
     const card = document.createElement("div");
     card.className = "deck-card";
     card.dataset.index = idx;
+    card.setAttribute("data-cursor", `PAGE ${data.num}`);
 
     const img = document.createElement("img");
     img.alt = `Diary Page ${data.num}`;
@@ -457,7 +537,7 @@ let curtainLeft, curtainRight, curtainGroup;
 function initThreeEngine() {
   const canvas = document.getElementById("webgl-canvas");
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050505, 0.03);
+  scene.fog = new THREE.FogExp2(0x030204, 0.03);
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 10);
@@ -469,13 +549,13 @@ function initThreeEngine() {
   const ambientLight = new THREE.AmbientLight(0xfff0e6, 0.9);
   scene.add(ambientLight);
 
-  const mainSpotlight = new THREE.SpotLight(0xd4af37, 3.0);
+  const mainSpotlight = new THREE.SpotLight(0xd4af37, 3.2);
   mainSpotlight.position.set(0, 15, 12);
   mainSpotlight.angle = Math.PI / 4;
   mainSpotlight.penumbra = 0.8;
   scene.add(mainSpotlight);
 
-  const redFill = new THREE.PointLight(0x7a121d, 2.0, 35);
+  const redFill = new THREE.PointLight(0x7a121d, 2.2, 35);
   redFill.position.set(-8, -4, 5);
   scene.add(redFill);
 
@@ -569,7 +649,7 @@ function build3DHearts() {
 function build3DCurtains() {
   curtainGroup = new THREE.Group();
   curtainGroup.position.set(0, 0, 4);
-  curtainGroup.visible = true; // Visible at start for Curtains Opening Scene!
+  curtainGroup.visible = true;
   scene.add(curtainGroup);
 
   const width = 12;
@@ -593,10 +673,10 @@ function build3DCurtains() {
   });
 
   curtainLeft = new THREE.Mesh(geom, curtainMat);
-  curtainLeft.position.set(-width / 4, 0, 0); // Closed start position
+  curtainLeft.position.set(-width / 4, 0, 0);
 
   curtainRight = new THREE.Mesh(geom, curtainMat);
-  curtainRight.position.set(width / 4, 0, 0); // Closed start position
+  curtainRight.position.set(width / 4, 0, 0);
 
   curtainGroup.add(curtainLeft);
   curtainGroup.add(curtainRight);
@@ -629,10 +709,8 @@ function animateLoop() {
 function initScrollTimeline() {
   gsap.registerPlugin(ScrollTrigger);
 
-  // START SCENE 1: 3D CURTAINS OPENING AT LAUNCH
   runOpeningCurtainsAndTypewriter();
 
-  // FOZIYA TITLE SCALING
   gsap.to("#hero-title", {
     scrollTrigger: {
       trigger: "#scene-intro",
@@ -645,11 +723,10 @@ function initScrollTimeline() {
     ease: "power2.inOut"
   });
 
-  // Photo Cards Reveal & Dynamic BG Lighting Shift
   const bannerRows = document.querySelectorAll(".banner-pair-row, .banner-single-row");
   bannerRows.forEach((row) => {
     const cards = row.querySelectorAll(".her-photo-card");
-    const bgColor = row.dataset.bgColor || "#050505";
+    const bgColor = row.dataset.bgColor || "#030204";
 
     ScrollTrigger.create({
       trigger: row,
@@ -725,14 +802,20 @@ function initScrollTimeline() {
     }
   });
 
+  // Love Letter Line-by-Line Reveal with Imperceptible Camera Forward Zoom
   const letterParagraphs = document.querySelectorAll("#letter-content p");
-  letterParagraphs.forEach((p) => {
+  letterParagraphs.forEach((p, idx) => {
     gsap.to(p, {
       scrollTrigger: {
         trigger: p,
         start: "top 75%",
         end: "bottom 35%",
-        toggleClass: "active-line"
+        toggleClass: "active-line",
+        onEnter: () => {
+          if (camera) {
+            gsap.to(camera.position, { z: 10 - (idx * 0.08), duration: 1 });
+          }
+        }
       }
     });
   });
@@ -813,13 +896,11 @@ function runOpeningCurtainsAndTypewriter() {
 
   const tl = gsap.timeline({ delay: 0.3 });
 
-  // 1. 3D Curtains Slowly Draw Open to Left & Right
   if (curtainLeft && curtainRight) {
     tl.to(curtainLeft.position, { x: -9, duration: 2.2, ease: "power2.inOut" }, 0)
       .to(curtainRight.position, { x: 9, duration: 2.2, ease: "power2.inOut" }, 0);
   }
 
-  // 2. Typewriter Sequence
   tl.to(line1, { opacity: 1, duration: 0.4 })
     .to({}, { duration: 0.5, onStart: () => { line1.textContent = "hey..."; } })
     .to(line2, { opacity: 1, duration: 0.4 }, "+=0.6")
@@ -837,7 +918,6 @@ function initAudioSystem() {
   const enterBtn = document.getElementById("enter-btn");
 
   enterBtn.addEventListener("click", () => {
-    // 3D Zoom Slide Camera Push Transition into FOZIYA Hero Intro
     gsap.timeline()
       .to(".opening-content", { scale: 1.6, opacity: 0, duration: 1, ease: "power3.in" })
       .to(window, { scrollTo: "#scene-intro", duration: 1.2, ease: "power2.inOut" }, 0.4);
@@ -894,6 +974,8 @@ function playSynthesizedPad() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initCinematicPreloader();
+  initCustomCursor();
   initDomElements();
   initThreeEngine();
   initScrollTimeline();

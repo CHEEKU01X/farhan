@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Foziya & Farhaann | A Cinematic Love Story</title>
-  <meta name="description" content="A cinematic interactive love letter and memory book created specially for Foziya (Farhaann).">
+  <meta name="description"
+    content="A cinematic interactive love letter and memory book created specially for Foziya (Farhaann).">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
 
   <!-- Style -->
   <link rel="stylesheet" href="style.css">
@@ -19,14 +23,30 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
+
 <body>
+
+  <!-- LUXURY CUSTOM CURSOR (DESKTOP) -->
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="cursor-dot"></div>
+    <div class="cursor-halo"></div>
+    <div class="cursor-badge" id="cursor-badge">
+      <span class="badge-text" id="badge-text">VIEW</span>
+    </div>
+  </div>
+
+  <!-- CINEMATIC PRELOADER -->
+  <div class="cinematic-preloader" id="preloader">
+    <div class="preloader-light-line" id="preloader-line"></div>
+    <div class="preloader-spark" id="preloader-spark"></div>
+  </div>
 
   <!-- WebGL Background & 3D Canvas -->
   <canvas id="webgl-canvas"></canvas>
 
-  <!-- Film Grain & Vignette Overlay -->
+  <!-- Dynamic Film Grain, Vignette & Light Leak Overlays -->
   <div class="grain-overlay"></div>
-  <div class="vignette-overlay"></div>
+  <div class="vignette-overlay" id="vignette"></div>
   <div class="light-leak" id="light-leak"></div>
 
   <!-- Music Player Controller -->
@@ -46,7 +66,7 @@
   <!-- MAIN INTERACTIVE TIMELINE CONTAINER -->
   <main id="story-container">
 
-    <!-- SCENE 1: OPENING / LOADING (CURTAINS OPENING -> TYPEWRITER -> ENTER BUTTON -> ZOOM SLIDE) -->
+    <!-- SCENE 1: OPENING / LOADING -->
     <section class="scene-section scene-opening" id="scene-opening">
       <div class="opening-content">
         <div class="glowing-orb" id="glowing-orb"></div>
@@ -55,26 +75,26 @@
           <p class="tw-text tw-line-2" id="tw-2"></p>
           <p class="tw-text tw-line-3" id="tw-3"></p>
         </div>
-        <button class="enter-btn" id="enter-btn">
+        <button class="enter-btn" id="enter-btn" data-cursor="ENTER ♡">
           <span>click to enter ♡</span>
           <div class="btn-glow"></div>
         </button>
       </div>
     </section>
 
-    <!-- SCENE 2: FOZIYA INTRO HERO (ENTER BUTTON ZOOMS SLIDES HERE) -->
+    <!-- SCENE 2: FOZIYA INTRO HERO -->
     <section class="scene-section scene-intro" id="scene-intro">
       <div class="intro-content">
         <h1 class="hero-title" id="hero-title">FOZIYA</h1>
-        <p class="hero-subtitle">my Farhaann ♡</p>
+        <p class="hero-subtitle" id="hero-subtitle">my Farhaann ♡</p>
         <p class="hero-tagline">the girl behind all these little memories.</p>
       </div>
     </section>
 
-    <!-- SCENE 3: PART 1 — FARHAANN (PHOTOS 1 to 5 IN DUAL BANNER PAIRS WITH DYNAMIC BG COLOR SHIFTS) -->
+    <!-- SCENE 3: PART 1 — FARHAANN (PHOTOS 1 to 5 IN DUAL-CARD PAIRS & TILT BANNERS) -->
     <section class="scene-section scene-her-part1" id="scene-her-part1">
       <div class="photo-banner-grid" id="her-photos-1-container">
-        <!-- Injected via JavaScript as side-by-side 2-photo banner cards -->
+        <!-- Injected via JavaScript as 3D layered photo cards -->
       </div>
     </section>
 
@@ -87,7 +107,7 @@
       </div>
     </section>
 
-    <!-- SCENE 5: PART 2 — HER DIARY (COMPACT 3D INTERACTIVE MEMORY DECK BANNER) -->
+    <!-- SCENE 5: PART 2 — HER DIARY (COMPACT 3D MEMORY DECK BANNER) -->
     <section class="scene-section scene-diary-compact" id="scene-diary">
       <div class="diary-banner-header">
         <h2 class="diary-banner-title">HER DIARY</h2>
@@ -95,11 +115,11 @@
       </div>
 
       <div class="diary-deck-container" id="diary-deck-container">
-        <button class="deck-nav-btn btn-prev" id="diary-prev-btn" aria-label="Previous Page">‹</button>
+        <button class="deck-nav-btn btn-prev" id="diary-prev-btn" aria-label="Previous Page" data-cursor="PREV">‹</button>
         <div class="diary-deck-stage" id="diary-deck-stage">
           <!-- Injected dynamically via JS as 3D deck cards -->
         </div>
-        <button class="deck-nav-btn btn-next" id="diary-next-btn" aria-label="Next Page">›</button>
+        <button class="deck-nav-btn btn-next" id="diary-next-btn" aria-label="Next Page" data-cursor="NEXT">›</button>
       </div>
 
       <div class="diary-deck-controls">
@@ -113,7 +133,7 @@
       </div>
     </section>
 
-    <!-- SCENE 6: PART 3 — FARHAANN AGAIN (PHOTOS 6 to 10 IN DUAL BANNER PAIRS) -->
+    <!-- SCENE 6: PART 3 — FARHAANN AGAIN (PHOTOS 6 to 10) -->
     <section class="scene-section scene-her-part2" id="scene-her-part2">
       <div class="her2-intro-box" id="her2-intro-box">
         <p class="her2-intro-text">And after looking at everything you made...</p>
@@ -121,7 +141,7 @@
         <h2 class="her2-intro-highlight">you.</h2>
       </div>
       <div class="photo-banner-grid" id="her-photos-2-container">
-        <!-- Injected via JavaScript as 2-photo banner cards -->
+        <!-- Injected via JavaScript -->
       </div>
     </section>
 
@@ -141,13 +161,13 @@
     <!-- SCENE 8: OUR PHOTOS MERGING IN 3D -->
     <section class="scene-section scene-us-photos" id="scene-us-photos">
       <div class="us-stage" id="us-stage">
-        <div class="us-card card-my" id="card-my">
+        <div class="us-card card-my" id="card-my" data-cursor="YOU">
           <div class="photo-frame">
             <img id="img-my" src="./assets/us/my-photo.jpg" alt="My Photo" />
           </div>
           <span class="card-tag">Me</span>
         </div>
-        <div class="us-card card-her" id="card-her">
+        <div class="us-card card-her" id="card-her" data-cursor="ME">
           <div class="photo-frame">
             <img id="img-her-us" src="./assets/us/her-photo.jpg" alt="Farhaann Photo" />
           </div>
@@ -188,4 +208,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>
