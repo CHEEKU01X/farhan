@@ -49,19 +49,7 @@
   <div class="vignette-overlay" id="vignette"></div>
   <div class="light-leak" id="light-leak"></div>
 
-  <!-- Music Player Controller -->
-  <div class="music-control-container" id="music-control" title="Toggle Music">
-    <button class="music-btn" id="music-btn" aria-label="Toggle Audio">
-      <div class="eq-bars">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </div>
-      <span class="music-label" id="music-label">Song</span>
-    </button>
-  </div>
-  <audio id="bg-audio" loop src="./assets/music/our-song.mp3" preload="auto"></audio>
+
 
   <!-- MAIN INTERACTIVE TIMELINE CONTAINER -->
   <main id="story-container">
@@ -164,13 +152,13 @@
       <div class="us-stage" id="us-stage">
         <div class="us-card card-my" id="card-my" data-cursor="YOU">
           <div class="photo-frame">
-            <img id="img-my" src="./assets/us/my_photo.jpg" alt="My Photo" />
+            <img id="img-my" src="./assets/us/my_photo.jpg" alt="My Photo" loading="lazy" decoding="async" />
           </div>
           <span class="card-tag">Me</span>
         </div>
         <div class="us-card card-her" id="card-her" data-cursor="ME">
           <div class="photo-frame">
-            <img id="img-her-us" src="./assets/us/her_photo.jpg" alt="Farhaann Photo" />
+            <img id="img-her-us" src="./assets/us/her_photo.jpg" alt="Farhaann Photo" loading="lazy" decoding="async" />
           </div>
           <span class="card-tag">Farhaann</span>
         </div>
