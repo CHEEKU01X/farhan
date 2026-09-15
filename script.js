@@ -1,13 +1,13 @@
 /* ==========================================================================
-   FOZIYA / HEER - CINEMATIC LOVE WEBSITE SCRIPT
+   FOZIYA / FARHAANN - CINEMATIC LOVE WEBSITE SCRIPT
    ========================================================================== */
 
 // 1. CONFIGURATION OBJECT
 const CONFIG = {
   herName: "Foziya",
-  nickname: "Heer",
+  nickname: "Farhaann",
   herPhotoCount: 10,
-  diaryPhotoCount: 18,
+  diaryPhotoCount: 13,
   myPhoto: "./assets/us/my-photo.jpg",
   herFinalPhoto: "./assets/us/her-photo.jpg",
   music: "./assets/music/our-song.mp3"
@@ -16,61 +16,71 @@ const CONFIG = {
 // 2. HER PHOTOS DATA ARRAY
 const herPhotosData = [
   {
-    src: "./assets/her/her1.jpg",
+    src: "./assets/her/her1.jpeg",
+    fallbackSrcs: ["./assets/her/her1.jpg", "./her1.jpeg", "./her1.jpg"],
     quote: "So this is the gorgeous girl I was talking about... apparently she also comes with a built-in comedy mode. 😂",
     sub: "my little troublemaker ♡",
     type: "flash"
   },
   {
-    src: "./assets/her/her2.jpg",
+    src: "./assets/her/her2.jpeg",
+    fallbackSrcs: ["./assets/her/her2.jpg", "./her2.jpeg", "./her2.jpg"],
     quote: "Okay... enough with the cuteness. You're making it very difficult for me to act normal.",
     sub: null,
     type: "soft"
   },
   {
-    src: "./assets/her/her3.jpg",
+    src: "./assets/her/her3.jpeg",
+    fallbackSrcs: ["./assets/her/her3.jpg", "./her3.jpeg", "./her3.jpg"],
     quote: "I swear, you don't even have to try... you just exist and somehow make everything prettier.",
     sub: null,
     type: "parallax"
   },
   {
-    src: "./assets/her/her4.jpg",
+    src: "./assets/her/her4.jpeg",
+    fallbackSrcs: ["./assets/her/her4.jpg", "./her4.jpeg", "./her4.jpg"],
     quote: "Excuse me... who gave you permission to look THIS beautiful?",
-    sub: "Seriously, Heer?",
+    sub: "Seriously, Farhaann?",
     type: "vertical"
   },
   {
-    src: "./assets/her/her5.jpg",
+    src: "./assets/her/her5.jpeg",
+    fallbackSrcs: ["./assets/her/her5.jpg", "./her5.jpeg", "./her5.jpg"],
     quote: "One beautiful picture wasn't enough, was it? You had to make me fall for you twice.",
     sub: null,
     type: "tilt3d"
   },
   {
-    src: "./assets/her/her6.jpg",
+    src: "./assets/her/her6.jpeg",
+    fallbackSrcs: ["./assets/her/her6.jpg", "./her6.jpeg", "./her6.jpg"],
     quote: "Maybe this is just a picture... but if I could choose one little world to stay in forever, I'd choose the one where it's you and me.",
     sub: "you + me ♡",
     type: "ghibli"
   },
   {
-    src: "./assets/her/her7.jpg",
+    src: "./assets/her/her7.jpeg",
+    fallbackSrcs: ["./assets/her/her7.jpg", "./her7.jpeg", "./her7.jpg"],
     quote: "Even with the whole world around you... somehow, you're still the first thing I notice.",
     sub: null,
     type: "sand"
   },
   {
-    src: "./assets/her/her8.jpg",
-    quote: "Okay Heer... I genuinely don't know what I'm supposed to do with this much beauty.",
+    src: "./assets/her/her8.jpeg",
+    fallbackSrcs: ["./assets/her/her8.jpg", "./her8.jpeg", "./her8.jpg"],
+    quote: "Okay Farhaann... I genuinely don't know what I'm supposed to do with this much beauty.",
     sub: "You're unreal.",
     type: "blur"
   },
   {
-    src: "./assets/her/her9.jpg",
+    src: "./assets/her/her9.jpeg",
+    fallbackSrcs: ["./assets/her/her9.jpg", "./her9.jpeg", "./her9.jpg"],
     quote: "I could write a thousand things about how beautiful you are... and I'd still feel like I haven't said enough.",
     sub: null,
     type: "spotlight"
   },
   {
-    src: "./assets/her/her10.jpg",
+    src: "./assets/her/her10.jpeg",
+    fallbackSrcs: ["./assets/her/her10.jpg", "./her10.jpeg", "./her10.jpg"],
     quote: null,
     sub: null,
     type: "childhood",
@@ -86,7 +96,7 @@ const herPhotosData = [
   }
 ];
 
-// 3. DIARY PHOTOS ARRAY
+// 3. DIARY PHOTOS ARRAY (13 Photos)
 const diaryPhotos = Array.from(
   { length: CONFIG.diaryPhotoCount },
   (_, i) => `./assets/diary/diary${i + 1}.jpg`
@@ -149,14 +159,12 @@ function generateFallbackCanvas(title, width = 600, height = 800) {
   canvas.height = height;
   const ctx = canvas.getContext("2d");
 
-  // Background gradient
   const grad = ctx.createLinearGradient(0, 0, width, height);
   grad.addColorStop(0, "#1a080d");
   grad.addColorStop(1, "#080305");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, width, height);
 
-  // Borders
   ctx.strokeStyle = "#4a0e17";
   ctx.lineWidth = 8;
   ctx.strokeRect(10, 10, width - 20, height - 20);
@@ -165,13 +173,12 @@ function generateFallbackCanvas(title, width = 600, height = 800) {
   ctx.lineWidth = 2;
   ctx.strokeRect(20, 20, width - 40, height - 40);
 
-  // Content Text
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   ctx.fillStyle = "#d4af37";
   ctx.font = "italic 24px 'Cormorant Garamond', serif";
-  ctx.fillText("♡ HEER & FOZIYA ♡", width / 2, height / 2 - 40);
+  ctx.fillText("♡ FARHAANN & FOZIYA ♡", width / 2, height / 2 - 40);
 
   ctx.fillStyle = "#f7e7ce";
   ctx.font = "bold 28px 'Cormorant Garamond', serif";
@@ -184,33 +191,41 @@ function generateFallbackCanvas(title, width = 600, height = 800) {
   return canvas.toDataURL("image/jpeg");
 }
 
-function setupImageFallback(imgElement, fallbackTitle, src) {
-  imgElement.onerror = function() {
-    console.warn("Missing image: " + src);
-    imgElement.onerror = null;
-    imgElement.src = generateFallbackCanvas(fallbackTitle);
-  };
+function setupImageFallbackWithChain(imgElement, fallbackTitle, primarySrc, fallbackSrcs = []) {
+  const chain = [primarySrc, ...fallbackSrcs];
+  let attemptIdx = 0;
+
+  function tryNext() {
+    if (attemptIdx < chain.length) {
+      const current = chain[attemptIdx++];
+      imgElement.src = current;
+    } else {
+      console.warn("Missing image: " + primarySrc);
+      imgElement.onerror = null;
+      imgElement.src = generateFallbackCanvas(fallbackTitle);
+    }
+  }
+
+  imgElement.onerror = tryNext;
+  tryNext();
 }
 
 // ==========================================================================
 // DOM BUILDERS FOR HER PHOTOS & LOVE LETTER
 // ==========================================================================
 function initDomElements() {
-  // Render Her Photos 1-5
   const container1 = document.getElementById("her-photos-1-container");
   herPhotosData.slice(0, 5).forEach((data, index) => {
     const card = createPhotoCardDom(data, index + 1);
     container1.appendChild(card);
   });
 
-  // Render Her Photos 6-10
   const container2 = document.getElementById("her-photos-2-container");
   herPhotosData.slice(5, 10).forEach((data, index) => {
     const card = createPhotoCardDom(data, index + 6);
     container2.appendChild(card);
   });
 
-  // Render Love Letter Paragraphs
   const letterContainer = document.getElementById("letter-content");
   loveLetterParagraphs.forEach((paraText) => {
     const p = document.createElement("p");
@@ -218,11 +233,10 @@ function initDomElements() {
     letterContainer.appendChild(p);
   });
 
-  // Setup Image Fallbacks for Us Photos
   const imgMy = document.getElementById("img-my");
   const imgHer = document.getElementById("img-her-us");
-  setupImageFallback(imgMy, "My Photo", CONFIG.myPhoto);
-  setupImageFallback(imgHer, "Her Photo", CONFIG.herFinalPhoto);
+  setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg"]);
+  setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, ["./her-photo.jpg"]);
 }
 
 function createPhotoCardDom(data, num) {
@@ -241,9 +255,9 @@ function createPhotoCardDom(data, num) {
 
   const img = document.createElement("img");
   img.className = "her-img";
-  img.alt = `Heer Photo ${num}`;
-  img.src = data.src;
-  setupImageFallback(img, `Heer Photo #${num}`, data.src);
+  img.alt = `Farhaann Photo ${num}`;
+
+  setupImageFallbackWithChain(img, `Farhaann Photo #${num}`, data.src, data.fallbackSrcs);
   frameContainer.appendChild(img);
 
   card.appendChild(frameContainer);
@@ -304,7 +318,6 @@ function initThreeEngine() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  // Lights
   const ambientLight = new THREE.AmbientLight(0xfff0e6, 0.8);
   scene.add(ambientLight);
 
@@ -319,23 +332,15 @@ function initThreeEngine() {
   redFill.position.set(-8, -4, 5);
   scene.add(redFill);
 
-  // 1. DUST PARTICLES
   buildDustParticles();
-
-  // 2. 3D DIARY MESH CARDS
   build3DDiaryCards();
-
-  // 3. 3D HEART PARTICLES
   build3DHearts();
-
-  // 4. 3D VELVET CURTAINS
   build3DCurtains();
 
   window.addEventListener("resize", onWindowResize);
   animateLoop();
 }
 
-// Dust Particles
 function buildDustParticles() {
   const count = window.innerWidth < 768 ? 150 : 350;
   const geometry = new THREE.BufferGeometry();
@@ -364,10 +369,9 @@ function buildDustParticles() {
   scene.add(dustParticles);
 }
 
-// 3D Diary Cards
 function build3DDiaryCards() {
   diaryGroup = new THREE.Group();
-  diaryGroup.position.set(0, 0, -20); // Hidden by default
+  diaryGroup.position.set(0, 0, -20);
   scene.add(diaryGroup);
 
   const textureLoader = new THREE.TextureLoader();
@@ -375,36 +379,46 @@ function build3DDiaryCards() {
   for (let i = 0; i < CONFIG.diaryPhotoCount; i++) {
     const cardGeom = new THREE.BoxGeometry(3.2, 4.2, 0.04);
     
-    // Load texture with fallback handling
     const imgSrc = diaryPhotos[i];
     const texture = textureLoader.load(
       imgSrc,
       undefined,
       undefined,
       function() {
-        console.warn("Missing image: " + imgSrc);
-        const fallbackSrc = generateFallbackCanvas(`Diary Page #${i + 1}`, 600, 800);
-        textureLoader.load(fallbackSrc, (tex) => {
-          materials[4].map = tex;
-          materials[4].needsUpdate = true;
-        });
+        // Try fallback root path or jpeg extension
+        const altSrc = `./diary${i + 1}.jpg`;
+        textureLoader.load(
+          altSrc,
+          (altTex) => {
+            materials[4].map = altTex;
+            materials[4].needsUpdate = true;
+          },
+          undefined,
+          () => {
+            console.warn("Missing image: " + imgSrc);
+            const fallbackSrc = generateFallbackCanvas(`Diary Page #${i + 1}`, 600, 800);
+            textureLoader.load(fallbackSrc, (tex) => {
+              materials[4].map = tex;
+              materials[4].needsUpdate = true;
+            });
+          }
+        );
       }
     );
 
     const materials = [
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }), // right
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }), // left
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }), // top
-      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }), // bottom
-      new THREE.MeshStandardMaterial({ map: texture, roughness: 0.4 }),    // front
-      new THREE.MeshStandardMaterial({ color: 0x0a0406, roughness: 0.9 })  // back
+      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
+      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
+      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
+      new THREE.MeshStandardMaterial({ color: 0x12080a, roughness: 0.8 }),
+      new THREE.MeshStandardMaterial({ map: texture, roughness: 0.4 }),
+      new THREE.MeshStandardMaterial({ color: 0x0a0406, roughness: 0.9 })
     ];
 
     const cardMesh = new THREE.Mesh(cardGeom, materials);
     cardMesh.castShadow = true;
     cardMesh.receiveShadow = true;
 
-    // Stack positioning
     cardMesh.position.set(0, 0, -i * 0.6);
     cardMesh.rotation.z = (Math.random() - 0.5) * 0.08;
     cardMesh.visible = false;
@@ -414,13 +428,11 @@ function build3DDiaryCards() {
   }
 }
 
-// 3D Hearts
 function build3DHearts() {
   heartGroup = new THREE.Group();
   heartGroup.position.set(0, 0, -50);
   scene.add(heartGroup);
 
-  // Shape for 3D Heart Mesh
   const x = 0, y = 0;
   const heartShape = new THREE.Shape();
   heartShape.moveTo(x + 0.25, y + 0.25);
@@ -467,10 +479,9 @@ function build3DHearts() {
   heartGroup.add(heartInstancedMesh);
 }
 
-// 3D Velvet Curtains
 function build3DCurtains() {
   curtainGroup = new THREE.Group();
-  curtainGroup.position.set(0, 0, 4); // In front of main camera view when closed
+  curtainGroup.position.set(0, 0, 4);
   curtainGroup.visible = false;
   scene.add(curtainGroup);
 
@@ -478,7 +489,6 @@ function build3DCurtains() {
   const height = 14;
   const geom = new THREE.PlaneGeometry(width, height, 32, 32);
 
-  // Add realistic curtain cloth waves to geometry vertices
   const pos = geom.attributes.position;
   for (let i = 0; i < pos.count; i++) {
     const vx = pos.getX(i);
@@ -496,10 +506,10 @@ function build3DCurtains() {
   });
 
   curtainLeft = new THREE.Mesh(geom, curtainMat);
-  curtainLeft.position.set(-width / 2 - 4, 0, 0); // Open position
+  curtainLeft.position.set(-width / 2 - 4, 0, 0);
 
   curtainRight = new THREE.Mesh(geom, curtainMat);
-  curtainRight.position.set(width / 2 + 4, 0, 0); // Open position
+  curtainRight.position.set(width / 2 + 4, 0, 0);
 
   curtainGroup.add(curtainLeft);
   curtainGroup.add(curtainRight);
@@ -514,13 +524,11 @@ function onWindowResize() {
 function animateLoop() {
   requestAnimationFrame(animateLoop);
 
-  // Slow ambient rotation of dust
   if (dustParticles) {
     dustParticles.rotation.y += 0.0005;
     dustParticles.rotation.x += 0.0002;
   }
 
-  // Slow ambient movement of hearts
   if (heartGroup && heartGroup.visible) {
     heartGroup.rotation.y += 0.002;
   }
@@ -534,10 +542,8 @@ function animateLoop() {
 function initScrollTimeline() {
   gsap.registerPlugin(ScrollTrigger);
 
-  // SCENE 1: TYPEWRITER OPENING
   runOpeningTypewriter();
 
-  // SCENE 2: FOZIYA HERO TITLE SCALING
   gsap.to("#hero-title", {
     scrollTrigger: {
       trigger: "#scene-intro",
@@ -550,7 +556,6 @@ function initScrollTimeline() {
     ease: "power2.inOut"
   });
 
-  // SCENE 3 & 6: HER PHOTO CARDS ANIMATIONS
   herPhotosData.forEach((data, idx) => {
     const cardNum = idx + 1;
     const cardEl = document.getElementById(`her-card-${cardNum}`);
@@ -572,7 +577,6 @@ function initScrollTimeline() {
       ease: "power3.out"
     });
 
-    // Special effects per card type
     if (data.type === "flash") {
       const flashEl = cardEl.querySelector(".flash-effect");
       tl.to(flashEl, { opacity: 1, duration: 0.08 }, 0.2)
@@ -588,7 +592,6 @@ function initScrollTimeline() {
     }
   });
 
-  // SCENE 4: DIARY INTRO TEXT LINES
   gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-diary-intro",
@@ -601,7 +604,6 @@ function initScrollTimeline() {
   .to(".diary-intro-text.line-2", { opacity: 1, y: 0, duration: 1 }, "+=0.5")
   .to(".diary-intro-text.line-3", { opacity: 1, y: 0, duration: 1 }, "+=0.5");
 
-  // SCENE 5: 3D DIARY INTERACTIVE SCROLL
   const diaryTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-diary",
@@ -626,15 +628,14 @@ function initScrollTimeline() {
 
   const hudCounter = document.getElementById("diary-counter");
 
-  // Cycle through 18 physical 3D cards
   diaryMeshCards.forEach((cardMesh, i) => {
     diaryTL.to(cardMesh, {
       onStart: () => {
         cardMesh.visible = true;
         const numStr = (i + 1).toString().padStart(2, '0');
-        if (hudCounter) hudCounter.textContent = `${numStr} / 18`;
+        if (hudCounter) hudCounter.textContent = `${numStr} / ${CONFIG.diaryPhotoCount}`;
       },
-      z: 5, // Bring card forward towards camera
+      z: 5,
       rotationY: (i % 2 === 0 ? 0.3 : -0.3),
       rotationX: (i % 3 === 0 ? 0.15 : -0.1),
       opacity: 0,
@@ -643,11 +644,9 @@ function initScrollTimeline() {
     });
   });
 
-  // Outro text at end of diary
   diaryTL.to("#diary-outro-box", { opacity: 1, duration: 1.5 })
          .to("#diary-outro-box", { opacity: 0, duration: 1 }, "+=1");
 
-  // SCENE 7: LOVE LETTER SENTENCE REVEAL
   const letterParagraphs = document.querySelectorAll("#letter-content p");
   letterParagraphs.forEach((p) => {
     gsap.to(p, {
@@ -660,7 +659,6 @@ function initScrollTimeline() {
     });
   });
 
-  // SCENE 8: OUR PHOTOS MERGE
   const usTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-us-photos",
@@ -676,7 +674,6 @@ function initScrollTimeline() {
       .to("#card-her", { x: 0, scale: 1.05, duration: 1 }, 2)
       .to("#us-merged-title", { opacity: 1, scale: 1, duration: 1.2 }, 3);
 
-  // SCENE 9 & 10: CLIMAX TYPEWRITER, EXTREME ZOOM & 3D HEARTS
   const climaxText = document.getElementById("climax-text");
   const fullText = "I LOVE YOU";
   
@@ -689,7 +686,6 @@ function initScrollTimeline() {
     }
   });
 
-  // Typewriter step progression
   for (let i = 1; i <= fullText.length; i++) {
     const subStr = fullText.substring(0, i);
     climaxTL.to({}, {
@@ -700,7 +696,6 @@ function initScrollTimeline() {
     });
   }
 
-  // Extreme Zoom into screen
   climaxTL.to("#climax-container", {
     scale: 18,
     opacity: 0,
@@ -708,7 +703,6 @@ function initScrollTimeline() {
     ease: "power3.in"
   });
 
-  // 3D Hearts & Curtains Closing (Scene 11 & 12)
   const finaleTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-finale",
@@ -724,13 +718,11 @@ function initScrollTimeline() {
 
   finaleTL.to("#hearts-center-message", { opacity: 1, duration: 1.5 })
          .to("#hearts-center-message", { opacity: 0, duration: 1 }, "+=1")
-         // Close 3D Curtains
          .to(curtainLeft.position, { x: -3, duration: 3, ease: "power2.inOut" }, 3)
          .to(curtainRight.position, { x: 3, duration: 3, ease: "power2.inOut" }, 3)
          .to("#curtains-message", { opacity: 1, duration: 2 }, 6);
 }
 
-// Typewriter sequence for Opening Scene
 function runOpeningTypewriter() {
   const line1 = document.getElementById("tw-1");
   const line2 = document.getElementById("tw-2");
@@ -748,10 +740,7 @@ function runOpeningTypewriter() {
     .to(enterBtn, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "+=0.5");
 }
 
-// ==========================================================================
-// AUDIO ENGINE & USER INTERACTION UNLOCK
-// ==========================================================================
-let audioContext, audioSynthOsc, bgAudioEl;
+let audioContext, bgAudioEl;
 
 function initAudioSystem() {
   bgAudioEl = document.getElementById("bg-audio");
@@ -759,14 +748,12 @@ function initAudioSystem() {
   const enterBtn = document.getElementById("enter-btn");
 
   enterBtn.addEventListener("click", () => {
-    // Smooth scroll to intro scene
     gsap.to(window, {
       scrollTo: "#scene-intro",
       duration: 1.5,
       ease: "power2.inOut"
     });
 
-    // Start audio
     playAudioTrack();
   });
 
@@ -788,19 +775,17 @@ function playAudioTrack() {
   bgAudioEl.play().then(() => {
     musicBtn.classList.remove("paused");
   }).catch(() => {
-    // If audio file is missing or blocked, initialize WebAudio synthesized romantic ambient chord loop fallback!
     console.warn("Audio play blocked or file missing. Using synthesized romantic ambient pad.");
     playSynthesizedPad();
     musicBtn.classList.remove("paused");
   });
 }
 
-// WebAudio Romantic Ambient Synth Fallback
 function playSynthesizedPad() {
   if (audioContext) return;
   try {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [261.63, 329.63, 392.00, 493.88]; // C, E, G, B soft romantic chord
+    const notes = [261.63, 329.63, 392.00, 493.88];
 
     notes.forEach((freq) => {
       const osc = audioContext.createOscillator();
@@ -808,7 +793,6 @@ function playSynthesizedPad() {
 
       osc.type = "sine";
       osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-
       gain.gain.setValueAtTime(0.02, audioContext.currentTime);
 
       osc.connect(gain);
@@ -821,7 +805,6 @@ function playSynthesizedPad() {
   }
 }
 
-// Initialize on DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
   initDomElements();
   initThreeEngine();
