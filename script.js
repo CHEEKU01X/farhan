@@ -3,6 +3,9 @@
    Targeting Foziya (Farhaann)
    ========================================================================== */
 
+// 0. MOBILE & DEVICE DETECTION
+const isMobile = (window.innerWidth < 768) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 // 1. CONFIGURATION OBJECT
 const CONFIG = {
   herName: "Foziya",
@@ -10,8 +13,7 @@ const CONFIG = {
   herPhotoCount: 10,
   diaryPhotoCount: 14,
   myPhoto: "./assets/us/my_photo.jpg",
-  herFinalPhoto: "./assets/us/her_photo.jpg",
-  music: "./assets/music/our-song.mp3"
+  herFinalPhoto: "./assets/us/her_photo.jpg"
 };
 
 // 2. HER PHOTOS DATA ARRAY
@@ -194,6 +196,8 @@ function generateFallbackCanvas(title, width = 600, height = 800) {
 }
 
 function setupImageFallbackWithChain(imgElement, fallbackTitle, primarySrc, fallbackSrcs = []) {
+  imgElement.loading = "lazy";
+  imgElement.decoding = "async";
   const chain = [primarySrc, ...fallbackSrcs];
   let attemptIdx = 0;
 
@@ -221,6 +225,11 @@ let cursorHaloX = 0, cursorHaloY = 0;
 
 function initCustomCursor() {
   const cursorContainer = document.getElementById("custom-cursor");
+  if (isMobile) {
+    if (cursorContainer) cursorContainer.style.display = "none";
+    return;
+  }
+
   const dot = cursorContainer ? cursorContainer.querySelector(".cursor-dot") : null;
   const halo = cursorContainer ? cursorContainer.querySelector(".cursor-halo") : null;
   const badge = document.getElementById("cursor-badge");
@@ -402,6 +411,8 @@ function createPhotoCardDom(data, num) {
   const img = document.createElement("img");
   img.className = "her-img";
   img.alt = `Farhaann Photo ${num}`;
+  img.loading = "lazy";
+  img.decoding = "async";
 
   setupImageFallbackWithChain(img, `Farhaann Photo #${num}`, data.src, data.fallbackSrcs);
   frameContainer.appendChild(img);
@@ -442,28 +453,37 @@ function createPhotoCardDom(data, num) {
 }
 
 // 3D Interactive Mouse Tilt Effect on Photo Frames
+let tiltTicking = false;
 function initMouse3DTilt() {
+  if (isMobile) return;
+
   document.addEventListener("mousemove", (e) => {
-    const mouseXNorm = (e.clientX / window.innerWidth - 0.5) * 2;
-    const mouseYNorm = (e.clientY / window.innerHeight - 0.5) * 2;
+    if (tiltTicking) return;
+    tiltTicking = true;
+    requestAnimationFrame(() => {
+      const mouseXNorm = (e.clientX / window.innerWidth - 0.5) * 2;
+      const mouseYNorm = (e.clientY / window.innerHeight - 0.5) * 2;
 
-    const frames = document.querySelectorAll(".photo-frame-container");
-    frames.forEach((frame) => {
-      const rect = frame.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        const rotX = -mouseYNorm * 6; // ±2° to ±6° subtle tilt
-        const rotY = mouseXNorm * 6;
-        frame.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
-      } else {
-        frame.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+      const frames = document.querySelectorAll(".photo-frame-container");
+      const vh = window.innerHeight;
+      frames.forEach((frame) => {
+        const rect = frame.getBoundingClientRect();
+        if (rect.top < vh && rect.bottom > 0) {
+          const rotX = -mouseYNorm * 6; // ±2° to ±6° subtle tilt
+          const rotY = mouseXNorm * 6;
+          frame.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+        } else {
+          frame.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+        }
+      });
+
+      if (camera) {
+        camera.position.x += (mouseXNorm * 1.5 - camera.position.x) * 0.05;
+        camera.position.y += (-mouseYNorm * 1.5 - camera.position.y) * 0.05;
+        camera.lookAt(0, 0, 0);
       }
+      tiltTicking = false;
     });
-
-    if (camera) {
-      camera.position.x += (mouseXNorm * 1.5 - camera.position.x) * 0.05;
-      camera.position.y += (-mouseYNorm * 1.5 - camera.position.y) * 0.05;
-      camera.lookAt(0, 0, 0);
-    }
   });
 }
 
@@ -558,20 +578,21 @@ function initThreeEngine() {
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 10);
 
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  const maxPixelRatio = isMobile ? 1.0 : Math.min(window.devicePixelRatio, 2);
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true, powerPreference: "high-performance" });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(maxPixelRatio);
 
   const ambientLight = new THREE.AmbientLight(0xfff0e6, 0.9);
   scene.add(ambientLight);
 
-  const mainSpotlight = new THREE.SpotLight(0xd4af37, 3.2);
+  const mainSpotlight = new THREE.SpotLight(0xd4af37, isMobile ? 2.5 : 3.2);
   mainSpotlight.position.set(0, 15, 12);
   mainSpotlight.angle = Math.PI / 4;
   mainSpotlight.penumbra = 0.8;
   scene.add(mainSpotlight);
 
-  const redFill = new THREE.PointLight(0x7a121d, 2.2, 35);
+  const redFill = new THREE.PointLight(0x7a121d, isMobile ? 1.5 : 2.2, 35);
   redFill.position.set(-8, -4, 5);
   scene.add(redFill);
 
@@ -585,7 +606,7 @@ function initThreeEngine() {
 }
 
 function buildDustParticles() {
-  const count = window.innerWidth < 768 ? 200 : 450;
+  const count = isMobile ? 80 : 450;
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
   const scales = new Float32Array(count);
@@ -602,7 +623,7 @@ function buildDustParticles() {
 
   const material = new THREE.PointsMaterial({
     color: 0xf7e7ce,
-    size: 0.15,
+    size: isMobile ? 0.2 : 0.15,
     transparent: true,
     opacity: 0.55,
     blending: THREE.AdditiveBlending
@@ -627,7 +648,7 @@ function build3DHearts() {
   heartShape.bezierCurveTo(x + 0.8, y + 0.35, x + 0.8, y, x + 0.5, y);
   heartShape.bezierCurveTo(x + 0.35, y, x + 0.25, y + 0.25, x + 0.25, y + 0.25);
 
-  const extrudeSettings = { depth: 0.1, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.04, bevelThickness: 0.04 };
+  const extrudeSettings = { depth: 0.1, bevelEnabled: !isMobile, bevelSegments: 2, steps: 1, bevelSize: 0.04, bevelThickness: 0.04 };
   const heartGeom = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
   heartGeom.center();
 
@@ -639,7 +660,7 @@ function build3DHearts() {
     emissiveIntensity: 0.5
   });
 
-  const count = window.innerWidth < 768 ? 140 : 280;
+  const count = isMobile ? 50 : 280;
   heartInstancedMesh = new THREE.InstancedMesh(heartGeom, heartMat, count);
 
   const dummy = new THREE.Object3D();
@@ -671,7 +692,8 @@ function build3DCurtains() {
 
   const width = 12;
   const height = 14;
-  const geom = new THREE.PlaneGeometry(width, height, 32, 32);
+  const planeSegs = isMobile ? 12 : 32;
+  const geom = new THREE.PlaneGeometry(width, height, planeSegs, planeSegs);
 
   const pos = geom.attributes.position;
   for (let i = 0; i < pos.count; i++) {
@@ -1116,67 +1138,14 @@ function runOpeningCurtainsAndTypewriter() {
     .to(enterBtn, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "+=0.4");
 }
 
-let audioContext, bgAudioEl;
-
-function initAudioSystem() {
-  bgAudioEl = document.getElementById("bg-audio");
-  const musicBtn = document.getElementById("music-btn");
+function initEnterButton() {
   const enterBtn = document.getElementById("enter-btn");
-
+  if (!enterBtn) return;
   enterBtn.addEventListener("click", () => {
     gsap.timeline()
       .to(".opening-content", { scale: 1.6, opacity: 0, duration: 1, ease: "power3.in" })
       .to(window, { scrollTo: "#scene-intro", duration: 1.2, ease: "power2.inOut" }, 0.4);
-
-    playAudioTrack();
   });
-
-  musicBtn.addEventListener("click", () => {
-    if (bgAudioEl && !bgAudioEl.paused) {
-      bgAudioEl.pause();
-      musicBtn.classList.add("paused");
-    } else {
-      playAudioTrack();
-      musicBtn.classList.remove("paused");
-    }
-  });
-}
-
-function playAudioTrack() {
-  const musicBtn = document.getElementById("music-btn");
-  if (!bgAudioEl) return;
-
-  bgAudioEl.play().then(() => {
-    musicBtn.classList.remove("paused");
-  }).catch(() => {
-    console.warn("Audio play blocked or file missing. Using synthesized romantic ambient pad.");
-    playSynthesizedPad();
-    musicBtn.classList.remove("paused");
-  });
-}
-
-function playSynthesizedPad() {
-  if (audioContext) return;
-  try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [261.63, 329.63, 392.00, 493.88];
-
-    notes.forEach((freq) => {
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-      gain.gain.setValueAtTime(0.02, audioContext.currentTime);
-
-      osc.connect(gain);
-      gain.connect(audioContext.destination);
-
-      osc.start();
-    });
-  } catch(e) {
-    console.warn("Synthesizer error:", e);
-  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1185,5 +1154,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initDomElements();
   initThreeEngine();
   initScrollTimeline();
-  initAudioSystem();
+  initEnterButton();
 });
