@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FOZIYA / FARHAANN - CINEMATIC LOVE WEBSITE SCRIPT
+   FOZIYA / FARHAANN - CINEMATIC LOVE WEBSITE SCRIPT (3D ENHANCED)
    ========================================================================== */
 
 // 1. CONFIGURATION OBJECT
@@ -212,27 +212,24 @@ function setupImageFallbackWithChain(imgElement, fallbackTitle, primarySrc, fall
 }
 
 // ==========================================================================
-// DOM BUILDERS FOR HER PHOTOS & DIARY 3D BANNER DECK
+// DOM BUILDERS FOR HER PHOTOS & 3D INTERACTIVE DIARY DECK
 // ==========================================================================
 let currentDeckIdx = 0;
 let deckCards = [];
 
 function initDomElements() {
-  // Render Her Photos 1-5
   const container1 = document.getElementById("her-photos-1-container");
   herPhotosData.slice(0, 5).forEach((data, index) => {
     const card = createPhotoCardDom(data, index + 1);
     container1.appendChild(card);
   });
 
-  // Render Her Photos 6-10
   const container2 = document.getElementById("her-photos-2-container");
   herPhotosData.slice(5, 10).forEach((data, index) => {
     const card = createPhotoCardDom(data, index + 6);
     container2.appendChild(card);
   });
 
-  // Render Love Letter Paragraphs
   const letterContainer = document.getElementById("letter-content");
   loveLetterParagraphs.forEach((paraText) => {
     const p = document.createElement("p");
@@ -240,14 +237,13 @@ function initDomElements() {
     letterContainer.appendChild(p);
   });
 
-  // Setup Image Fallbacks for Us Photos
   const imgMy = document.getElementById("img-my");
   const imgHer = document.getElementById("img-her-us");
   setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg"]);
   setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, ["./her-photo.jpg"]);
 
-  // Render Compact 3D Diary Memory Deck Banner
   initDiaryDeckBanner();
+  initMouse3DTilt();
 }
 
 function createPhotoCardDom(data, num) {
@@ -304,6 +300,34 @@ function createPhotoCardDom(data, num) {
 
   card.appendChild(quoteBox);
   return card;
+}
+
+// 3D Interactive Mouse Tilt Effect on Photo Frames
+function initMouse3DTilt() {
+  document.addEventListener("mousemove", (e) => {
+    const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+    // Smoothly tilt active visible photo cards
+    const frames = document.querySelectorAll(".photo-frame-container");
+    frames.forEach((frame) => {
+      const rect = frame.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        const rotX = -mouseY * 8;
+        const rotY = mouseX * 8;
+        frame.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+      } else {
+        frame.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+      }
+    });
+
+    // Update Three.js 3D Camera Parallax
+    if (camera) {
+      camera.position.x += (mouseX * 1.5 - camera.position.x) * 0.05;
+      camera.position.y += (-mouseY * 1.5 - camera.position.y) * 0.05;
+      camera.lookAt(0, 0, 0);
+    }
+  });
 }
 
 // Compact 3D Diary Memory Deck Banner Builder
@@ -380,7 +404,7 @@ function updateDeckState() {
 }
 
 // ==========================================================================
-// THREE.JS 3D ENGINE (Dust Particles, Hearts, Curtains)
+// THREE.JS 3D ENGINE (Dust Particles, Dynamic Lighting, Hearts, Curtains)
 // ==========================================================================
 let scene, camera, renderer;
 let dustParticles;
@@ -390,7 +414,7 @@ let curtainLeft, curtainRight, curtainGroup;
 function initThreeEngine() {
   const canvas = document.getElementById("webgl-canvas");
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050505, 0.035);
+  scene.fog = new THREE.FogExp2(0x050505, 0.03);
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 10);
@@ -399,16 +423,16 @@ function initThreeEngine() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  const ambientLight = new THREE.AmbientLight(0xfff0e6, 0.8);
+  const ambientLight = new THREE.AmbientLight(0xfff0e6, 0.9);
   scene.add(ambientLight);
 
-  const mainSpotlight = new THREE.SpotLight(0xd4af37, 2.5);
+  const mainSpotlight = new THREE.SpotLight(0xd4af37, 3.0);
   mainSpotlight.position.set(0, 15, 12);
   mainSpotlight.angle = Math.PI / 4;
   mainSpotlight.penumbra = 0.8;
   scene.add(mainSpotlight);
 
-  const redFill = new THREE.PointLight(0x7a121d, 1.5, 30);
+  const redFill = new THREE.PointLight(0x7a121d, 2.0, 35);
   redFill.position.set(-8, -4, 5);
   scene.add(redFill);
 
@@ -421,16 +445,16 @@ function initThreeEngine() {
 }
 
 function buildDustParticles() {
-  const count = window.innerWidth < 768 ? 180 : 400;
+  const count = window.innerWidth < 768 ? 200 : 450;
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
   const scales = new Float32Array(count);
 
   for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 30;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
-    scales[i] = Math.random() * 0.08 + 0.02;
+    positions[i * 3] = (Math.random() - 0.5) * 35;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 35;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 35;
+    scales[i] = Math.random() * 0.1 + 0.03;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -438,9 +462,9 @@ function buildDustParticles() {
 
   const material = new THREE.PointsMaterial({
     color: 0xf7e7ce,
-    size: 0.14,
+    size: 0.15,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.55,
     blending: THREE.AdditiveBlending
   });
 
@@ -472,10 +496,10 @@ function build3DHearts() {
     roughness: 0.3,
     metalness: 0.2,
     emissive: 0x4a0e17,
-    emissiveIntensity: 0.4
+    emissiveIntensity: 0.5
   });
 
-  const count = window.innerWidth < 768 ? 120 : 250;
+  const count = window.innerWidth < 768 ? 140 : 280;
   heartInstancedMesh = new THREE.InstancedMesh(heartGeom, heartMat, count);
 
   const dummy = new THREE.Object3D();
@@ -545,12 +569,12 @@ function animateLoop() {
   requestAnimationFrame(animateLoop);
 
   if (dustParticles) {
-    dustParticles.rotation.y += 0.0005;
-    dustParticles.rotation.x += 0.0002;
+    dustParticles.rotation.y += 0.0006;
+    dustParticles.rotation.x += 0.0003;
   }
 
   if (heartGroup && heartGroup.visible) {
-    heartGroup.rotation.y += 0.002;
+    heartGroup.rotation.y += 0.0025;
   }
 
   renderer.render(scene, camera);
