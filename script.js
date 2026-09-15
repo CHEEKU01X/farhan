@@ -9,8 +9,8 @@ const CONFIG = {
   nickname: "Farhaann",
   herPhotoCount: 10,
   diaryPhotoCount: 14,
-  myPhoto: "./assets/us/my-photo.jpg",
-  herFinalPhoto: "./assets/us/her-photo.jpg",
+  myPhoto: "./assets/us/my_photo.jpg",
+  herFinalPhoto: "./assets/us/her_photo.jpg",
   music: "./assets/music/our-song.mp3"
 };
 
@@ -337,8 +337,23 @@ function initDomElements() {
 
   const imgMy = document.getElementById("img-my");
   const imgHer = document.getElementById("img-her-us");
-  setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, ["./my-photo.jpg", "./my-photo.jpeg", "./assets/us/my-photo.jpeg"]);
-  setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, ["./her-photo.jpg", "./her-photo.jpeg", "./assets/her/her10.jpeg", "./assets/her/her10.jpg"]);
+  setupImageFallbackWithChain(imgMy, "My Photo", CONFIG.myPhoto, [
+    "./assets/us/my_photo.jpg",
+    "./assets/us/my_photo.jpeg",
+    "./assets/us/my-photo.jpg",
+    "./assets/us/my-photo.jpeg",
+    "./my_photo.jpg",
+    "./my-photo.jpg"
+  ]);
+  setupImageFallbackWithChain(imgHer, "Her Photo", CONFIG.herFinalPhoto, [
+    "./assets/us/her_photo.jpg",
+    "./assets/us/her_photo.jpeg",
+    "./assets/us/her-photo.jpg",
+    "./assets/us/her-photo.jpeg",
+    "./her_photo.jpg",
+    "./her-photo.jpg",
+    "./assets/her/her10.jpeg"
+  ]);
 
   initDiaryDeckBanner();
   initMouse3DTilt();
@@ -821,20 +836,26 @@ function initScrollTimeline() {
   });
 
   // SCENE 8: OUR PHOTOS MERGING WITH 3D LIGHT BURST
+  gsap.set("#card-my", { x: -240, rotate: -8, scale: 0.95, opacity: 1 });
+  gsap.set("#card-her", { x: 240, rotate: 8, scale: 0.95, opacity: 1 });
+
   const usTL = gsap.timeline({
     scrollTrigger: {
       trigger: "#scene-us-photos",
-      start: "top 40%",
-      end: "bottom 60%",
-      scrub: 1
+      start: "top 60%",
+      end: "bottom 40%",
+      scrub: 1.2
     }
   });
 
-  usTL.to("#card-my", { x: -20, rotate: 0, duration: 2 })
-      .to("#card-her", { x: 20, rotate: 0, duration: 2 }, 0)
-      .to("#card-my", { x: 0, scale: 1.08, duration: 1 }, 2)
-      .to("#card-her", { x: 0, scale: 1.08, duration: 1 }, 2)
-      .to("#us-merged-title", { opacity: 1, scale: 1, duration: 1.2 }, 3);
+  usTL.to("#card-my", { x: -70, rotate: -3, scale: 1, duration: 2, ease: "none" })
+      .to("#card-her", { x: 70, rotate: 3, scale: 1, duration: 2, ease: "none" }, 0)
+      .to("#card-my", { x: -10, rotate: -1, scale: 1.05, duration: 1.5, ease: "power1.out" }, 2)
+      .to("#card-her", { x: 10, rotate: 1, scale: 1.05, duration: 1.5, ease: "power1.out" }, 2)
+      .to("#card-my", { x: 0, rotate: 0, scale: 1.08, duration: 1, ease: "power2.inOut" }, 3.5)
+      .to("#card-her", { x: 0, rotate: 0, scale: 1.08, duration: 1, ease: "power2.inOut" }, 3.5)
+      .to("#us-stage", { boxShadow: "0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(122, 18, 29, 0.8)", duration: 1 }, 3.5)
+      .to("#us-merged-title", { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 4);
 
   // SCENE 9: CLIMAX TYPEWRITER & EXTREME ZOOM
   const climaxText = document.getElementById("climax-text");

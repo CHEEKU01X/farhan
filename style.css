@@ -957,20 +957,16 @@ html::-webkit-scrollbar {
   color: var(--accent-gold);
 }
 
-.card-my {
-  transform: translateX(-240px) rotate(-6deg);
-}
-
+.card-my,
 .card-her {
-  transform: translateX(240px) rotate(6deg);
+  will-change: transform, opacity;
 }
 
 .us-merged-title {
   margin-top: 40px;
   text-align: center;
   opacity: 0;
-  transform: scale(0.9);
-  transition: all 0.8s var(--ease-cinematic);
+  transform: scale(0.85);
 }
 
 .us-heading {
